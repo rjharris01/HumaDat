@@ -3,7 +3,8 @@ import './App.css';
 import { blue } from '@mui/material/colors';
 import { IconButton } from '@mui/material';
 import BluetoothConnectedIcon from '@mui/icons-material/BluetoothConnected';
-import Sidebar from "./components/sidebar/sidebar"
+import Sidebar from "./components/sidebar/sidebar";
+import Topbar from './components/topbar/topbar';
 
 function App() {
   const [supportsBluetooth, setSupportsBluetooth] = useState(false);
@@ -78,7 +79,10 @@ function App() {
 
   return (
     <div className="App">
+      <Topbar/>
+      <div className="container">
       <Sidebar/>
+      <div className="bluetoothConnect">
       <h1>Get Device Data</h1>
       {supportsBluetooth && !isDisconnected &&
             <p>Battery level: {batteryLevel}</p>
@@ -94,6 +98,9 @@ function App() {
       {!supportsBluetooth &&
         <p>This browser doesn't support the Web Bluetooth API</p>
       }
+      </div>
+      </div>
+      
     </div>
   );
 }

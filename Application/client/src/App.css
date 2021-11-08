@@ -12,4 +12,10 @@
     font-size: calc(10px + 2vmin);
     color: white;
   }
-  
+.container{
+  display: flex;
+}
+
+.bluetoothConnect{
+  flex:4;
+}
