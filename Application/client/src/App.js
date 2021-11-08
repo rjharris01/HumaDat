@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { blue } from '@mui/material/colors';
 import { IconButton } from '@mui/material';
 import BluetoothConnectedIcon from '@mui/icons-material/BluetoothConnected';
+import Sidebar from "./components/sidebar/sidebar"
 
 function App() {
   const [supportsBluetooth, setSupportsBluetooth] = useState(false);
@@ -76,13 +78,14 @@ function App() {
 
   return (
     <div className="App">
+      <Sidebar/>
       <h1>Get Device Data</h1>
       {supportsBluetooth && !isDisconnected &&
             <p>Battery level: {batteryLevel}</p>
       }
       {supportsBluetooth && isDisconnected &&
       <div className="BluetoothButton">
-        <IconButton color="Blue" onClick={connectToDeviceAndSubscribeToUpdates}>
+        <IconButton sx={{ color: blue[500] }} onClick={connectToDeviceAndSubscribeToUpdates}>
         <BluetoothConnectedIcon />
         </IconButton>
         <p>Connect to a HumaDat device</p>
