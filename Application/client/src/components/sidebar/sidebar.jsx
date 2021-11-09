@@ -1,37 +1,46 @@
-import "./sidebar.css"
-import LineStyleIcon from '@mui/icons-material/LineStyle';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import BluetoothIcon from '@mui/icons-material/Bluetooth';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
-
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import HealingIcon from '@mui/icons-material/Healing';
+import "../styles.css"
 export default function Sidebar(){
     return (
-        <div className="sidebar">
-            <div className="sidebarWrapper">
-                <div className="sidebarMenu">
-                    <h3 className="sidebarTitle"> HumaDat Dashboard</h3>
-                    <ul className="sidebarList">
-                        <li className="sidebarListItem">
-                            <LineStyleIcon/>
-                            Home
-                        </li>
-                        <li className="sidebarListItem">
-                            <TimelineIcon/>
-                            Data Analytics
-                        </li>
-                        <li className="sidebarListItem">
-                            <BluetoothIcon/>
-                            Bluetooth Connect
-                        </li>
-                        <li className="sidebarListItem">
-                            <ImportExportIcon/>
-                            Data Export
-                        </li>
+        <nav class="navbar">
+            <ul class="navbar-nav">
+                <li class="logo">
+                    <a href='#' class="nav-link">
+                        <HealingIcon/>
+                        <span class="link-text">HumaDat</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href='#' class="nav-link">
+                        <BluetoothIcon/>
+                        <span class="link-text">Bluetooth</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href='#' class="nav-link">
+                        <TimelineIcon/>
+                        <span class="link-text">Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href='#' class="nav-link">
+                        <ImportExportIcon/>
+                        <span class="link-text">Data</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href='#' class="nav-link">
+                        <PersonOutlineIcon/>
+                        <span class="link-text">Account</span>
+                    </a>
+                </li>
 
-                    </ul>
-                </div>
-            </div>
-        </div>
+            </ul>
+        </nav>
 
     )
 }

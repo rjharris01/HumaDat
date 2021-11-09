@@ -79,26 +79,25 @@ function App() {
 
   return (
     <div className="App">
-      <Topbar/>
-      <div className="container">
       <Sidebar/>
-      <div className="bluetoothConnect">
-      <h1>Get Device Data</h1>
-      {supportsBluetooth && !isDisconnected &&
-            <p>Battery level: {batteryLevel}</p>
-      }
-      {supportsBluetooth && isDisconnected &&
-      <div className="BluetoothButton">
-        <IconButton sx={{ color: blue[500] }} onClick={connectToDeviceAndSubscribeToUpdates}>
-        <BluetoothConnectedIcon />
-        </IconButton>
-        <p>Connect to a HumaDat device</p>
-      </div>
-      }
-      {!supportsBluetooth &&
-        <p>This browser doesn't support the Web Bluetooth API</p>
-      }
-      </div>
+      <div className="container">
+        <div className="bluetoothConnect">
+        <h1>Get Device Data</h1>
+        {supportsBluetooth && !isDisconnected &&
+              <p>Battery level: {batteryLevel}</p>
+        }
+        {supportsBluetooth && isDisconnected &&
+        <div className="BluetoothButton">
+          <IconButton sx={{ color: blue[500] }} onClick={connectToDeviceAndSubscribeToUpdates}>
+          <BluetoothConnectedIcon />
+          </IconButton>
+          <p>Connect to a HumaDat device</p>
+        </div>
+        }
+        {!supportsBluetooth &&
+          <p>This browser doesn't support the Web Bluetooth API</p>
+        }
+        </div>
       </div>
       
     </div>
