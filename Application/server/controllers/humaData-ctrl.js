@@ -103,17 +103,17 @@ getDataById = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getDatas = async (req, res) => {
-    await HumaData.find({}, (err, humaDatas) => {
+getData = async (req, res) => {
+    await HumaData.find({}, (err, humaData) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        if (!humaDatas.length) {
+        if (!humaData.length) {
             return res
                 .status(404)
                 .json({ success: false, error: `Data not found` })
         }
-        return res.status(200).json({ success: true, data: humaDatas })
+        return res.status(200).json({ success: true, data: humaData })
     }).catch(err => console.log(err))
 }
 
@@ -121,6 +121,6 @@ module.exports = {
     addData,
     updateData,
     deleteData,
-    getDatas,
+    getData,
     getDataById,
 }

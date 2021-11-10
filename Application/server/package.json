@@ -1,14 +1,14 @@
 {
-  "name": "server",
+  "name": "HumaDat Server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Server for HumaDat Project",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Richard Harris",
+  "license": "GNU",
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
