@@ -1,6 +1,7 @@
-const express = require('express')
+import express from 'express'
 
-const DataCtrl = require('../controllers/humaData-ctrl')
+import DataCtrl from '../controllers/humaData-ctrl.js'
+import HumaData from '../models/humaData-model.js'
 
 const router = express.Router()
 
@@ -9,3 +10,5 @@ router.put('/humaData/:id', DataCtrl.updateData)
 router.delete('/humaData/:id', DataCtrl.deleteData)
 router.get('/humaData/:id', DataCtrl.getDataById)
 router.get('/humaData', DataCtrl.getData)
+
+export default router

@@ -1,6 +1,7 @@
-const HumaData = require('../models/humaData-model')
+import asyncHandler from 'express-async-handler'
+import HumaData from '../models/humaData-model.js'
 
-addData = (req, res) => {
+const addData = asyncHandler ( async  (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -31,9 +32,9 @@ addData = (req, res) => {
                 message: 'data not added!',
             })
         })
-}
+})
 
-updateData = async (req, res) => {
+const updateData = asyncHandler( async (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -69,9 +70,9 @@ updateData = async (req, res) => {
                 })
             })
     })
-}
+})
 
-deleteData = async (req, res) => {
+const deleteData = asyncHandler( async (req, res) => {
     await HumaData.findOneAndDelete({ _id: req.params.id }, (err, humaData) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -85,10 +86,10 @@ deleteData = async (req, res) => {
 
         return res.status(200).json({ success: true, data: humaData })
     }).catch(err => console.log(err))
-}
+})
 
 
-getDataById = async (req, res) => {
+const getDataById = asyncHandler (async (req, res) => {
     await HumaData.findOne({ _id: req.params.id }, (err, humaData) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -101,9 +102,9 @@ getDataById = async (req, res) => {
         }
         return res.status(200).json({ success: true, data: humaData })
     }).catch(err => console.log(err))
-}
+})
 
-getData = async (req, res) => {
+const getData = asyncHandler( async (req, res) => {
     await HumaData.find({}, (err, humaData) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -115,12 +116,8 @@ getData = async (req, res) => {
         }
         return res.status(200).json({ success: true, data: humaData })
     }).catch(err => console.log(err))
-}
+})
 
-module.exports = {
-    addData,
-    updateData,
-    deleteData,
-    getData,
-    getDataById,
-}
+
+
+export default { addData,updateData, deleteData, getData, getDataById}
