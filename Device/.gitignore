@@ -1,0 +1,9 @@
+.build
+.mbed
+projectfiles
+*.py*
+BUILD
+DHT11
+mbed-os
+ADXL345
+LICENSE
