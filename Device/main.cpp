@@ -13,13 +13,33 @@
 
 
 DHT dht(PA_1,DHTTYPE);
-SPI spi(PA_7, PA_6, PA_5); // mosi, miso, sclk
-DigitalOut cs(PB_6);
+ADXL345 accelerometer(PA_7, PA_6,PB_3,PB_6); //PinName mosi, PinName miso, PinName sck, PinName cs
+                 
+                 
+                 
+
 
 
 int main()
 {
     int error = 0;
+
+    int accReadings[3] = {0, 0, 0};
+
+    printf("Device ID is: 0x%02x\n", accelerometer.getDevId());
+
+     //Go into standby mode to configure the device.
+    accelerometer.setPowerControl(0x00);
+ 
+    //Full resolution, +/-16g, 4mg/LSB.
+    accelerometer.setDataFormatControl(0x0B);
+    
+    //3.2kHz data rate.
+    accelerometer.setDataRate(ADXL345_3200HZ);
+ 
+    //Measurement mode.
+    accelerometer.setPowerControl(0x08);
+
     
 
     // Initialise the digital pin LED1 as an output
@@ -33,6 +53,9 @@ int main()
 
              int temperature = dht.ReadTemperature(CELCIUS);
              int humidity = dht.ReadHumidity();
+             accelerometer.getOutput(accReadings);
+             printf("%i, %i, %i\n", (int16_t)accReadings[0], (int16_t)accReadings[1], (int16_t)accReadings[2]);
+
              printf("%d\n",temperature);
              printf("%d %% \n",humidity);
              ThisThread::sleep_for(POLLING_RATE);
