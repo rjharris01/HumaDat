@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { blue } from '@mui/material/colors';
-import { IconButton } from '@mui/material';
+import { hslToRgb, IconButton } from '@mui/material';
 import BluetoothConnectedIcon from '@mui/icons-material/BluetoothConnected';
 import Sidebar from "./components/sidebar/sidebar";
 import Topbar from './components/topbar/topbar';
@@ -25,13 +25,91 @@ function App(props) {
 
   const decoder = new TextDecoder('utf-8');
 
+
+  const tempService = "4294c394-91ab-11ec-b909-0242ac120002"
+  const tempCharacteristicID = "4294a8a0-91ab-11ec-b909-0242ac120002"
+  
+  const humService = "4294b20a-91ab-11ec-b909-0242ac120002"
+  const humCharacteristicID = "4294a71a-91ab-11ec-b909-0242ac120002"
+
+  const accService = "4294aef4-91ab-11ec-b909-0242ac120002"
+  const accXCharacteristicID = "4294a27e-91ab-11ec-b909-0242ac120002"
+  const accYCharacteristicID = "4294a404-91ab-11ec-b909-0242ac120002"
+  const accZCharacteristicID = "4294a580-91ab-11ec-b909-0242ac120002"
+
+
+  const hrService = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+  const hrBPMCharacteristicID = "42949770-91ab-11ec-b909-0242ac120002"
+  const hrRedCharacteristicID = "42949a36-91ab-11ec-b909-0242ac120002"
+  const hrIRCharacteristicID = "42949a37-91ab-11ec-b909-0242ac120002"
+  const hrSpo2CharacteristicID = "4294aa4e-91ab-11ec-b909-0242ac120002"
+
+  const validService = "b07f7d8e-95ae-11ec-b909-0242ac120002"
+  const hrValidCharacteristicID = "4294a0da-91ab-11ec-b909-0242ac120002"
+
   const [Humadata, setHumaData] =  useState({
     labels  : ['1','2','3','4','5','6','7'],
     datasets: [{
       label: 'Temp',
-      data: [1],
+      data: [],
       fill: false,
       borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1
+    },
+    {
+      label: 'Humidity',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(75, 98, 192)',
+      tension: 0.1
+    },
+    {
+      label: 'Accelerometer X',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(75, 192, 89)',
+      tension: 0.1
+    },
+    {
+      label: 'Accelerometer Y',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(196, 118, 22)',
+      tension: 0.1
+    },
+    {
+      label: 'Accelerometer Z',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(196, 63, 22)',
+      tension: 0.1
+    },
+    {
+      label: 'BPM (PPG)',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(196, 25, 22)',
+      tension: 0.1
+    },
+    {
+      label: 'Red Light (PPG)',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(184, 61, 182)',
+      tension: 0.1
+    },
+    {
+      label: 'Infared Light (PPG)',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(86, 42, 173)',
+      tension: 0.1
+    },
+    {
+      label: 'Sp02 (PPG)',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(22, 44, 184)',
       tension: 0.1
     }]
   });
@@ -57,34 +135,71 @@ function App(props) {
    * received.
    */
   const handleCharacteristicValueChanged = (event) => {
-    //data.datasets[0].data.push(event.target.value.getUint8(0));
-    
-    //const tempData = JSON.parse(JSON.stringify(Humadata.datasets.slice(0)))
     const tempDataset = Humadata.datasets.slice(0);
-    const tempData = tempDataset[0].data.slice(0);
+    var pointer = 0; 
+    if (event.target.uuid === tempCharacteristicID){
+      pointer = 0;
+      console.log(pointer)
+    }
 
+    else if (event.target.uuid === humCharacteristicID){
+      pointer = 1;
+      console.log(pointer)
+    }
+
+    else if (event.target.uuid === accXCharacteristicID){
+      pointer = 2;
+      console.log(pointer)
+    }
+
+    else if (event.target.uuid === accYCharacteristicID){
+      pointer = 3;
+      console.log(pointer)
+    }
+
+    else if (event.target.uuid === accZCharacteristicID){
+      pointer = 4;
+      console.log(pointer)
+    }
+
+    else if (event.target.uuid === hrBPMCharacteristicID){
+      pointer = 5;
+      console.log(pointer)
+    }
+
+    else if (event.target.uuid === hrRedCharacteristicID){
+      pointer = 6;
+      console.log(pointer)
+    }
+
+    else if (event.target.uuid === hrIRCharacteristicID){
+      pointer = 7;
+      console.log(pointer)
+    }
+
+    else if (event.target.uuid === hrSpo2CharacteristicID){
+      pointer = 8;
+      console.log(pointer)
+    }
+
+    else {
+      console.log("else")
+      return;
+    }
+
+    const tempData = tempDataset[pointer].data.slice(0);
+    
+
+
+    
     tempData.push(event.target.value.getUint8(0));
-    tempDataset[0].data = tempData;
 
     
-
-    //tempData.datasets[0].data.push(event.target.value.getUint8(0))
-
-    console.log(JSON.parse(JSON.stringify(Humadata)))
-    
-    
-    
-    
-  
-
+    tempDataset[pointer].data = tempData;
     setHumaData(previous => ({
       ...previous,
       datasets: tempDataset
     }))
-
-    console.log(JSON.parse(JSON.stringify(Humadata)))
-    
-
   }
 
   /**
@@ -96,7 +211,8 @@ function App(props) {
       // Search for Bluetooth devices that advertise a battery service
       const device = await navigator.bluetooth
         .requestDevice({
-          filters: [{services: ['4294c394-91ab-11ec-b909-0242ac120002']}]
+          filters: [{name: 'Humadat'}],
+          optionalServices:[tempService,hrService,accService,humService,validService]
         });
 
       setIsDisconnected(false);
@@ -108,34 +224,159 @@ function App(props) {
       const server = await device.gatt.connect();
 
       // Get the battery service from the Bluetooth device
-      const service = await server.getPrimaryService('4294c394-91ab-11ec-b909-0242ac120002');
+      const services = await server.getPrimaryServices();
 
-      // Get the battery level characteristic from the Bluetooth device
-      const characteristic = await service.getCharacteristic('4294a8a0-91ab-11ec-b909-0242ac120002');
+      /*services.forEach(async service => {
+        if (service.uuid === tempService){
+          const tempCharacteristic = await service.getCharacteristic(tempCharacteristicID);
+        }
+        else if (service.uuid === hrService){
+          const hrBPMCharacteristic = await service.getCharacteristic(hrBPMCharacteristicID);
+          const hrRedCharacteristic = await service.getCharacteristic(hrRedCharacteristicID);
+          const hrIRCharacteristic =  await service.getCharacteristic(hrIRCharacteristicID);
+          const hrSpo2Characteristic = await service.getCharacteristic(hrSpo2CharacteristicID);
+          const hrValidCharacteristic = await service.getCharacteristic(hrValidCharacteristicID);
+        }
+        else if (service.uuid === accService){
+          const accXCharacteristic = await service.getCharacteristic(accXCharacteristicID);
+          const accYCharacteristic = await service.getCharacteristic(accYCharacteristicID);
+          const accZCharacteristic = await service.getCharacteristic(accZCharacteristicID);
+        }
+        else if (service.uuid === humService){
+          const humCharacteristic = await service.getCharacteristic(humCharacteristicID);
+        }
+      })*/
+
+      const tempCharacteristic = await services.find(service => service.uuid === tempService).getCharacteristic(tempCharacteristicID);
+
+      const humCharacteristic = await services.find(service => service.uuid === humService).getCharacteristic(humCharacteristicID);
+
+      const accXCharacteristic = await services.find(service => service.uuid === accService).getCharacteristic(accXCharacteristicID);
+      const accYCharacteristic = await services.find(service => service.uuid === accService).getCharacteristic(accYCharacteristicID);
+      const accZCharacteristic = await services.find(service => service.uuid === accService).getCharacteristic(accZCharacteristicID);
+
+      const hrBPMCharacteristic =  await services.find(service => service.uuid === hrService).getCharacteristic(hrBPMCharacteristicID);
+      const hrRedCharacteristic =  await services.find(service => service.uuid === hrService).getCharacteristic(hrRedCharacteristicID);
+      const hrIRCharacteristic =  await services.find(service => service.uuid === hrService).getCharacteristic(hrIRCharacteristicID);
+      const hrSpo2Characteristic = await services.find(service => service.uuid === hrService).getCharacteristic(hrSpo2CharacteristicID);
+
+      const hrValidCharacteristic = await services.find(service => service.uuid === validService).getCharacteristic(hrValidCharacteristicID);
+      
+     
+ 
 
       // Subscribe to battery level notifications
-      characteristic.startNotifications();
+      tempCharacteristic.startNotifications();
+
+      humCharacteristic.startNotifications();
+
+      accXCharacteristic.startNotifications();
+      accYCharacteristic.startNotifications();
+      accZCharacteristic.startNotifications();
+  
+
+      hrBPMCharacteristic.startNotifications();
+      hrRedCharacteristic.startNotifications();
+      hrIRCharacteristic.startNotifications();
+      hrSpo2Characteristic.startNotifications();
+      hrValidCharacteristic.startNotifications();
 
       // When the battery level changes, call a function
-      characteristic.addEventListener('characteristicvaluechanged',
-                                  handleCharacteristicValueChanged);
+      tempCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+      humCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+
+      accXCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+      accYCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+      accZCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+
+      hrBPMCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+      hrRedCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+      hrIRCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+      hrSpo2Characteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
+      hrValidCharacteristic.addEventListener('characteristicvaluechanged',handleCharacteristicValueChanged);
       
       // Read the battery level value
-      const reading = await characteristic.readValue();
+      const readingTemp = await tempCharacteristic.readValue();
+      const readingHum = await humCharacteristic.readValue();
+
+      const readingX = await accXCharacteristic.readValue();
+      const readingY = await accYCharacteristic.readValue();
+      const readingZ = await accZCharacteristic.readValue();
+
+      const readingBPM = await hrBPMCharacteristic.readValue();
+      const readingRed = await hrRedCharacteristic.readValue();
+      const readingIR = await hrIRCharacteristic.readValue();
+      const readingSp02 = await hrSpo2Characteristic.readValue();
 
       // Show the initial reading on the web page
       setHumaData({
         labels  : ['1','2','3','4','5','6','7'],
         datasets: [{
-          label: 'Temp',
-          data: [reading.getUint8(0)],
+          label: 'Temperature (°C)',
+          data: [readingTemp.getUint8(0)],
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        },
+        {
+          label: 'Humidity (%)',
+          data: [readingHum.getUint8(0)],
+          fill: false,
+          borderColor: 'rgb(75, 98, 192)',
+          tension: 0.1
+        },
+        {
+          label: 'Accelerometer X',
+          data: [readingX.getUint8(0)],
+          fill: false,
+          borderColor: 'rgb(75, 192, 89)',
+          tension: 0.1
+        },
+        {
+          label: 'Accelerometer Y',
+          data: [readingY.getUint8(0)],
+          fill: false,
+          borderColor: 'rgb(196, 118, 22)',
+          tension: 0.1
+        },
+        {
+          label: 'Accelerometer Z',
+          data: [readingZ.getUint8(0)],
+          fill: false,
+          borderColor: 'rgb(196, 63, 22)',
+          tension: 0.1
+        },
+        {
+          label: 'BPM (PPG)',
+          data: [readingBPM.getUint8(0)],
+          fill: false,
+          borderColor: 'rgb(196, 25, 22)',
+          tension: 0.1
+        },
+        {
+          label: 'Red Light (PPG)',
+          data: [readingRed.getUint8(0)],
+          fill: false,
+          borderColor: 'rgb(184, 61, 182)',
+          tension: 0.1
+        },
+        {
+          label: 'Infared Light (PPG)',
+          data: [readingIR.getUint8(0)],
+          fill: false,
+          borderColor: 'rgb(86, 42, 173)',
+          tension: 0.1
+        },
+        {
+          label: 'Sp02 (PPG)',
+          data: [readingSp02.getUint8(0)],
+          fill: false,
+          borderColor: 'rgb(22, 44, 184)',
           tension: 0.1
         }]
       });
 
-      console.log(JSON.parse(JSON.stringify(Humadata)))
+     
     } catch(error) {
       console.log(`There was an error: ${error}`);
     }
