@@ -6,36 +6,36 @@ import HealingIcon from '@mui/icons-material/Healing';
 import "../styles.css"
 export default function Sidebar(){
     return (
-        <nav class="navbar">
-            <ul class="navbar-nav">
-                <li class="logo">
-                    <a href='#' class="nav-link">
+        <nav className="navbar">
+            <ul className="navbar-nav">
+                <li className="logo">
+                    <a href='#' className="nav-link">
                         <HealingIcon/>
-                        <span class="link-text">HumaDat</span>
+                        <span className="link-text">HumaDat</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href='#' class="nav-link">
+                <li className="nav-item">
+                    <a href='#' className="nav-link">
                         <BluetoothIcon/>
-                        <span class="link-text">Bluetooth</span>
+                        <span className="link-text">Bluetooth</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href='#' class="nav-link">
+                <li className="nav-item">
+                    <a href='#' className="nav-link">
                         <TimelineIcon/>
-                        <span class="link-text">Analytics</span>
+                        <span className="link-text">Analytics</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href='#' class="nav-link">
+                <li className="nav-item">
+                    <a href='#' className="nav-link">
                         <ImportExportIcon/>
-                        <span class="link-text">Data</span>
+                        <span className="link-text">Data</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href='#' class="nav-link">
+                <li className="nav-item">
+                    <a href='#' className="nav-link">
                         <PersonOutlineIcon/>
-                        <span class="link-text">Account</span>
+                        <span className="link-text">Account</span>
                     </a>
                 </li>
 

@@ -30,6 +30,7 @@ ChartJS.register(
 
 export const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
@@ -51,7 +52,7 @@ const Chart = (props) => {
  
     
     return(
-    <div style={{height:"50vh", width: "100vh", position:"relative", marginBottom:"10%", padding:"5%",margin:"auto"}}>
+    <div style={{height:"70vh", width: "60vw", position:"relative", margin:"auto"}}>
       <Line options={options} data={props.updateData} />
     </div>
     )

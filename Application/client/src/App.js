@@ -47,8 +47,10 @@ function App(props) {
   const validService = "b07f7d8e-95ae-11ec-b909-0242ac120002"
   const hrValidCharacteristicID = "4294a0da-91ab-11ec-b909-0242ac120002"
 
+  const dataLimit = 10;
+
   const [Humadata, setHumaData] =  useState({
-    labels  : ['1','2','3','4','5','6','7'],
+    labels  : [],
     datasets: [{
       label: 'Temp',
       data: [],
@@ -136,71 +138,82 @@ function App(props) {
    */
   const handleCharacteristicValueChanged = (event) => {
     const tempDataset = Humadata.datasets.slice(0);
+    const tempLabels = Humadata.labels;
+
     var pointer = 0; 
+
     if (event.target.uuid === tempCharacteristicID){
       pointer = 0;
-      console.log(pointer)
     }
 
     else if (event.target.uuid === humCharacteristicID){
       pointer = 1;
-      console.log(pointer)
     }
 
     else if (event.target.uuid === accXCharacteristicID){
       pointer = 2;
-      console.log(pointer)
     }
 
     else if (event.target.uuid === accYCharacteristicID){
       pointer = 3;
-      console.log(pointer)
     }
 
     else if (event.target.uuid === accZCharacteristicID){
       pointer = 4;
-      console.log(pointer)
     }
 
     else if (event.target.uuid === hrBPMCharacteristicID){
       pointer = 5;
-      console.log(pointer)
     }
 
     else if (event.target.uuid === hrRedCharacteristicID){
       pointer = 6;
-      console.log(pointer)
     }
 
     else if (event.target.uuid === hrIRCharacteristicID){
       pointer = 7;
-      console.log(pointer)
     }
 
     else if (event.target.uuid === hrSpo2CharacteristicID){
       pointer = 8;
-      console.log(pointer)
     }
 
     else {
-      console.log("else")
       return;
     }
 
-    const tempData = tempDataset[pointer].data.slice(0);
+   
     
 
-
+    const tempData = tempDataset[pointer].data.slice(-dataLimit);
     
+     
     tempData.push(event.target.value.getUint8(0));
 
-    
-    tempDataset[pointer].data = tempData;
-    setHumaData(previous => ({
-      ...previous,
-      datasets: tempDataset
-    }))
+    if (pointer === 1)
+    {
+      
+      tempLabels.push(new Date().toLocaleString())
+      const labels = [...tempLabels].slice(-dataLimit)
+
+      tempDataset[pointer].data = tempData;
+      setHumaData(previous =>({
+        labels: labels,
+        datasets: tempDataset
+      }))
+      return;
+    }
+
+    else{
+      tempDataset[pointer].data = tempData;
+      setHumaData(previous => ({
+        ...previous,
+        datasets: tempDataset
+      }))
+    }
   }
+
+
 
   /**
    * Attempts to connect to a Bluetooth device and subscribe to
@@ -225,27 +238,6 @@ function App(props) {
 
       // Get the battery service from the Bluetooth device
       const services = await server.getPrimaryServices();
-
-      /*services.forEach(async service => {
-        if (service.uuid === tempService){
-          const tempCharacteristic = await service.getCharacteristic(tempCharacteristicID);
-        }
-        else if (service.uuid === hrService){
-          const hrBPMCharacteristic = await service.getCharacteristic(hrBPMCharacteristicID);
-          const hrRedCharacteristic = await service.getCharacteristic(hrRedCharacteristicID);
-          const hrIRCharacteristic =  await service.getCharacteristic(hrIRCharacteristicID);
-          const hrSpo2Characteristic = await service.getCharacteristic(hrSpo2CharacteristicID);
-          const hrValidCharacteristic = await service.getCharacteristic(hrValidCharacteristicID);
-        }
-        else if (service.uuid === accService){
-          const accXCharacteristic = await service.getCharacteristic(accXCharacteristicID);
-          const accYCharacteristic = await service.getCharacteristic(accYCharacteristicID);
-          const accZCharacteristic = await service.getCharacteristic(accZCharacteristicID);
-        }
-        else if (service.uuid === humService){
-          const humCharacteristic = await service.getCharacteristic(humCharacteristicID);
-        }
-      })*/
 
       const tempCharacteristic = await services.find(service => service.uuid === tempService).getCharacteristic(tempCharacteristicID);
 
@@ -310,7 +302,7 @@ function App(props) {
 
       // Show the initial reading on the web page
       setHumaData({
-        labels  : ['1','2','3','4','5','6','7'],
+        labels  : [new Date().toLocaleString()],
         datasets: [{
           label: 'Temperature (°C)',
           data: [readingTemp.getUint8(0)],
