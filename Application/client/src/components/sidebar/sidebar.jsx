@@ -9,13 +9,13 @@ export default function Sidebar(){
         <nav className="navbar">
             <ul className="navbar-nav">
                 <li className="logo">
-                    <a href='#' className="nav-link">
+                    <a href='/' className="nav-link">
                         <HealingIcon/>
                         <span className="link-text">HumaDat</span>
                     </a>
                 </li>
                 <li className="nav-item">
-                    <a href='#' className="nav-link">
+                    <a href='/ble' className="nav-link">
                         <BluetoothIcon/>
                         <span className="link-text">Bluetooth</span>
                     </a>
