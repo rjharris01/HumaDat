@@ -3,14 +3,19 @@ import { blue } from '@mui/material/colors';
 import {IconButton} from '@mui/material';
 import BluetoothConnectedIcon from '@mui/icons-material/BluetoothConnected';
 import Chart from '../components/chart/chart';
-
+import { useSelector} from 'react-redux'
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/sidebar/sidebar"
 
 
 const BleScreen = (props) => {
   const [supportsBluetooth, setSupportsBluetooth] = useState(false);
   const [isDisconnected, setIsDisconnected] = useState(true);
 
+  const history = useNavigate()
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const {userInfo} = userLogin
 
   const tempService = "4294c394-91ab-11ec-b909-0242ac120002"
   const tempCharacteristicID = "4294a8a0-91ab-11ec-b909-0242ac120002"
@@ -105,7 +110,10 @@ const BleScreen = (props) => {
 
   // When the component mounts, check that the browser supports Bluetooth
   useEffect(() => {
-    if (navigator.bluetooth) {
+    if(!userInfo){
+        history('/login')
+    }
+    else if (navigator.bluetooth) {
       setSupportsBluetooth(true);
     }
   }, []);
@@ -363,7 +371,7 @@ const BleScreen = (props) => {
 
   return (
       <div>
-      
+      <Sidebar/>
       <div className="container">
         
         <div className="bluetoothConnect">

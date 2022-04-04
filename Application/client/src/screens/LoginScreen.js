@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import {login } from '../components/actions/userActions'
+import {login } from '../actions/userActions'
 
 const LoginScreen = () => {
 
@@ -25,7 +25,7 @@ const LoginScreen = () => {
 
     useEffect(()=> {
         if(userInfo){
-            history(redirect)
+            history('/profile')
         }
     },[history, userInfo, redirect])
 

@@ -3,8 +3,20 @@ import BluetoothIcon from '@mui/icons-material/Bluetooth';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import HealingIcon from '@mui/icons-material/Healing';
+import LogoutIcon from '@mui/icons-material/Logout';
 import "../styles.css"
+import {useDispatch,useSelector} from 'react-redux'
+import { logout } from '../../actions/userActions'
+
 export default function Sidebar(){
+
+    const logoutHandler = () => {
+        dispatch(logout())
+    }
+    const userLogin = useSelector((state) => state.userLogin)
+    const {userInfo} = userLogin
+    const dispatch = useDispatch()
+
     return (
         <nav className="navbar">
             <ul className="navbar-nav">
@@ -14,7 +26,10 @@ export default function Sidebar(){
                         <span className="link-text">HumaDat</span>
                     </a>
                 </li>
-                <li className="nav-item">
+               
+                
+                 
+                         <li className="nav-item">
                     <a href='/ble' className="nav-link">
                         <BluetoothIcon/>
                         <span className="link-text">Bluetooth</span>
@@ -32,12 +47,20 @@ export default function Sidebar(){
                         <span className="link-text">Data</span>
                     </a>
                 </li>
-                <li className="nav-item">
-                    <a href='#' className="nav-link">
+                    <li className="nav-item">
+                    <a href='/profile' className="nav-link">
                         <PersonOutlineIcon/>
                         <span className="link-text">Account</span>
                     </a>
-                </li>
+                    </li>
+                    <li className="nav-item">
+                        <a href='/login' className="nav-link" onClick={logoutHandler}>
+                            <LogoutIcon/>
+                            <span className="link-text">Log out</span>
+                        </a>
+                    </li>
+                    
+                   
 
             </ul>
         </nav>
