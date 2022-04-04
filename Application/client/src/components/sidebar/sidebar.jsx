@@ -4,6 +4,7 @@ import ImportExportIcon from '@mui/icons-material/ImportExport';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import HealingIcon from '@mui/icons-material/Healing';
 import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 import "../styles.css"
 import {useDispatch,useSelector} from 'react-redux'
 import { logout } from '../../actions/userActions'
@@ -28,7 +29,8 @@ export default function Sidebar(){
                 </li>
                
                 
-                 
+                {userInfo ? (
+                    <>
                          <li className="nav-item">
                     <a href='/ble' className="nav-link">
                         <BluetoothIcon/>
@@ -53,16 +55,28 @@ export default function Sidebar(){
                         <span className="link-text">Account</span>
                     </a>
                     </li>
+
+                    
                     <li className="nav-item">
                         <a href='/login' className="nav-link" onClick={logoutHandler}>
                             <LogoutIcon/>
                             <span className="link-text">Log out</span>
                         </a>
                     </li>
+                    </>
+                ): <li className="nav-item">
+                <a href='/login' className="nav-link">
+                    <LoginIcon/>
+                    <span className="link-text">Log In</span>
+                </a>
+            </li>} 
+                    
                     
                    
 
-            </ul>
+            </ul> 
+
+            
         </nav>
 
     )

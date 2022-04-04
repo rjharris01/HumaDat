@@ -7,6 +7,7 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
 import {login } from '../actions/userActions'
+import Sidebar from '../components/sidebar/sidebar';
 
 const LoginScreen = () => {
 
@@ -35,7 +36,10 @@ const LoginScreen = () => {
         dispatch(login(email,password))
     }
 
-    return <FormContainer>
+    return <div>
+        <Sidebar/>
+        <FormContainer>
+        
         <h1>Sign In</h1>
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader/>}
@@ -69,13 +73,14 @@ const LoginScreen = () => {
 
         <Row className='py-3'>
             <Col>
-                New User? 
+                New User? {"  "}
                 <Link to={redirect ? `/register?redirect=${redirect}`: '/register'}>
-                     Register
+                      Register
                 </Link>
             </Col>
         </Row>
     </FormContainer> 
+    </div>
 }
 
 export default LoginScreen
