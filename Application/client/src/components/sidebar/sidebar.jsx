@@ -44,7 +44,7 @@ export default function Sidebar(){
                     </a>
                 </li>
                 <li className="nav-item">
-                    <a href='#' className="nav-link">
+                    <a href='/file/upload' className="nav-link">
                         <ImportExportIcon/>
                         <span className="link-text">Data</span>
                     </a>

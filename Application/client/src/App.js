@@ -6,6 +6,7 @@ import BleScreen from "./screens/BleScreen"
 import LoginScreen from './screens/LoginScreen'
 import ProfileScreen from './screens/ProfileScreen';
 import HomeScreen from './screens/HomeScreen';
+import FileUploadScreen from './screens/FileUploadScreen';
 
 
 
@@ -16,6 +17,7 @@ function App() {
       <div className="App">
         
           <Routes>
+            <Route path='/file/upload'element={<FileUploadScreen/>} exact/>
             <Route path='/profile' element={<ProfileScreen/>} exact/>
             <Route path='/login' element={<LoginScreen/>} exact/>
             <Route path='/' element={<HomeScreen/>} exact/>
