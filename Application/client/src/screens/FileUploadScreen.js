@@ -4,12 +4,12 @@ import Sidebar from "../components/sidebar/sidebar";
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux'
 import Dropzone, {useDropzone} from 'react-dropzone';
-import { Container } from '@mui/material';
 import FormContainer from '../components/FormContainer';
-
+import {upload} from '../actions/uploadActions'
 
 const  FileUploadScreen = () => {
 
+    const dispatch = useDispatch()
     const userLogin = useSelector(state => state.userLogin)
     const {loading, error, userInfo} = userLogin
 
@@ -26,7 +26,8 @@ const  FileUploadScreen = () => {
             console.log(acceptedFiles[0]);
             Papa.parse(acceptedFiles[0], {
               complete: function(results) {
-                console.log("Finished:", results.data);
+                console.log("Finished:", results.data.slice(0,-1));
+                dispatch(upload(results.data.slice(0,-1)))
               }}
             )
           }

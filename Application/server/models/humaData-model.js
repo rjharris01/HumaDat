@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const HumaData = new Schema(
     {
         user:{type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User'},
-        _id: { type: String, required: true },
+        device_id: { type: String, required: true },
         time: { type: [String], required: true },
         hrValue: { type: Number, required: true },
         irValue: { type: Number, required: true },
@@ -17,9 +17,6 @@ const HumaData = new Schema(
         zValue: { type: Number, required: true },
 
         
-    },{
-
-    timestamps:true
     }
 )
 
