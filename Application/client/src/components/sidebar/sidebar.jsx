@@ -38,7 +38,7 @@ export default function Sidebar(){
                     </a>
                 </li>
                 <li className="nav-item">
-                    <a href='#' className="nav-link">
+                    <a href='/analytics' className="nav-link">
                         <TimelineIcon/>
                         <span className="link-text">Analytics</span>
                     </a>

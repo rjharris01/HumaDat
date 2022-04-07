@@ -7,7 +7,7 @@ import HumaData from '../models/humaData-model.js'
 const getHumadata = asyncHandler( async (req,res) => {
     const data = await HumaData.find({})
 
-    res.json([])
+    res.json([data])
 })
 
 // @desc   Add data

@@ -7,6 +7,7 @@ import LoginScreen from './screens/LoginScreen'
 import ProfileScreen from './screens/ProfileScreen';
 import HomeScreen from './screens/HomeScreen';
 import FileUploadScreen from './screens/FileUploadScreen';
+import AnalyticsScreen from './screens/AnalyticsScreen';
 
 
 
@@ -22,6 +23,7 @@ function App() {
             <Route path='/login' element={<LoginScreen/>} exact/>
             <Route path='/' element={<HomeScreen/>} exact/>
             <Route path='/ble' element={<BleScreen/>} exact/>
+            <Route path='/analytics' element={<AnalyticsScreen/>} exact/>
           </Routes>
         
       </div>
