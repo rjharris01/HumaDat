@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {Table,Button,Row,Col, Container, Form} from 'react-bootstrap'
 import LineChart from '../components/chart/analyticsCharts';
 import FormContainer from '../components/FormContainer'
-
+import Loader from '../components/Loader'
 
 
 const  AnalyticsScreen = () => {
@@ -74,9 +74,9 @@ const  AnalyticsScreen = () => {
     return (
         <>
         <Sidebar/>
-        <Container>
-        <h1>HumaDat Analytics</h1>
+        <Container >
         <Row>
+        <h1>HumaDat Analytics</h1>
             <Row>
                 <Col>
                         XYZ
@@ -84,7 +84,7 @@ const  AnalyticsScreen = () => {
             </Row>
 
             <Col>
-            <Row className='py-3'>
+            <Row>
                 <LineChart xyz={xyzdata} TandHdata={TandHdata} HRdata = {HRdata} PPGdata = {PPGdata}/>
                 
             </Row>
@@ -108,49 +108,49 @@ const  AnalyticsScreen = () => {
                 </Table>
             </Row>
             </Col>
-            <Col xs md="auto">
-           
-            <Form onSubmit={submitHandler}>
-                    <Form.Group controlId='device_id'>
-                    <Form.Label>Device ID</Form.Label>
-                    <Form.Control
-                    type='text'
-                    placeholder='Enter Device Id' 
-                    value={device_id} 
-                    onChange={(e) => setdevice_id(e.target.value)}
-                    ></Form.Control>
+        
 
-                </Form.Group>
+                <Form onSubmit={submitHandler}>
+                        <Form.Group controlId='device_id'>
+                        <Form.Label>Device ID</Form.Label>
+                        <Form.Control
+                        type='text'
+                        placeholder='Enter Device Id' 
+                        value={device_id} 
+                        onChange={(e) => setdevice_id(e.target.value)}
+                        ></Form.Control>
 
-                <Form.Group controlId='dateStart'>
-                    <Form.Label>Start of data</Form.Label>
-                    <Form.Control
-                    type='text'
-                    placeholder='Enter start of data' 
-                    value={dateStart} 
-                    onChange={(e) => setdateStart(e.target.value)}
-                    ></Form.Control>
+                    </Form.Group>
 
-                </Form.Group>
+                    <Form.Group controlId='dateStart'>
+                        <Form.Label>Start of data</Form.Label>
+                        <Form.Control
+                        type='text'
+                        placeholder='Enter start of data' 
+                        value={dateStart} 
+                        onChange={(e) => setdateStart(e.target.value)}
+                        ></Form.Control>
 
-                <Form.Group controlId='dateEnd'>
-                    <Form.Label>End of Data</Form.Label>
-                    <Form.Control
-                    type='text'
-                    placeholder='Enter end of data' 
-                    value={dateEnd} 
-                    onChange={(e) => setdateEnd(e.target.value)}
-                    ></Form.Control>
+                    </Form.Group>
 
-                </Form.Group>
-                
-                <Button type='submit' variant='primary m-2'>
-                    Sign in 
-                </Button>
-            </Form>
-            </Col>
-        </Row>
-        </Container>
+                    <Form.Group controlId='dateEnd'>
+                        <Form.Label>End of Data</Form.Label>
+                        <Form.Control
+                        type='text'
+                        placeholder='Enter end of data' 
+                        value={dateEnd} 
+                        onChange={(e) => setdateEnd(e.target.value)}
+                        ></Form.Control>
+
+                    </Form.Group>
+                    
+                    <Button type='submit' variant='primary m-2'>
+                        Search for data
+                    </Button>
+                </Form>
+            
+            </Row>
+            </Container>
         </>
     )
 }

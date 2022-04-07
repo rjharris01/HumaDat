@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import Dropzone, {useDropzone} from 'react-dropzone';
 import FormContainer from '../components/FormContainer';
 import {upload} from '../actions/uploadActions'
-import Loader from '../components/Loader'
+
 
 const  FileUploadScreen = () => {
 
