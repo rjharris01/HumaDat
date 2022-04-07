@@ -4,17 +4,17 @@ import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux'
 import {Table,Button,Row,Col, Container, Form} from 'react-bootstrap'
 import LineChart from '../components/chart/analyticsCharts';
-import FormContainer from '../components/FormContainer'
-import Loader from '../components/Loader'
-
-
+import DateTimePicker from 'react-datetime-picker';
+import Select from 'react-select';
+import {getById} from '../actions/dataActions'
 const  AnalyticsScreen = () => {
 
     const history = useNavigate()
+    const dispatch = useDispatch()
 
     const [device_id, setdevice_id] = useState('')
-    const [dateStart, setdateStart] = useState('')
-    const [dateEnd, setdateEnd] = useState('')
+    const [dateEnd, setdateEnd] = useState(new Date());
+    const [dateStart, setdateStart] = useState(new Date());
 
 
 
@@ -27,6 +27,14 @@ const  AnalyticsScreen = () => {
         }
     })
 
+    const aquaticCreatures = [
+        { label: 'Shark', value: 'Shark' },
+        { label: 'Dolphin', value: 'Dolphin' },
+        { label: 'Whale', value: 'Whale' },
+        { label: 'Octopus', value: 'Octopus' },
+        { label: 'Crab', value: 'Crab' },
+        { label: 'Lobster', value: 'Lobster' },
+      ];
 
 
     const [xyzdata, setxyzdata] =  useState({
@@ -66,13 +74,22 @@ const  AnalyticsScreen = () => {
 
 
       const submitHandler = (e) => {
-        e.preventDefault()
+          console.log(device_id.value)
+          console.log(dateStart.toISOString())
+          console.log(dateEnd.toISOString())
+          dispatch(getById(dateStart.toISOString(),dateEnd.toISOString(),device_id.value))
+          e.preventDefault()
         //dispatch(login(email,password))
     }
 
 
     return (
         <>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css"></link> 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
         <Sidebar/>
         <Container >
         <Row>
@@ -113,34 +130,18 @@ const  AnalyticsScreen = () => {
                 <Form onSubmit={submitHandler}>
                         <Form.Group controlId='device_id'>
                         <Form.Label>Device ID</Form.Label>
-                        <Form.Control
-                        type='text'
-                        placeholder='Enter Device Id' 
-                        value={device_id} 
-                        onChange={(e) => setdevice_id(e.target.value)}
-                        ></Form.Control>
-
-                    </Form.Group>
+                        <Select options={aquaticCreatures}
+                        onChange={setdevice_id}/>
+                        </Form.Group>
 
                     <Form.Group controlId='dateStart'>
-                        <Form.Label>Start of data</Form.Label>
-                        <Form.Control
-                        type='text'
-                        placeholder='Enter start of data' 
-                        value={dateStart} 
-                        onChange={(e) => setdateStart(e.target.value)}
-                        ></Form.Control>
-
+                        <Form.Label>Start of data: </Form.Label>
+                            <DateTimePicker onChange={setdateStart} value={dateStart} />
                     </Form.Group>
 
                     <Form.Group controlId='dateEnd'>
                         <Form.Label>End of Data</Form.Label>
-                        <Form.Control
-                        type='text'
-                        placeholder='Enter end of data' 
-                        value={dateEnd} 
-                        onChange={(e) => setdateEnd(e.target.value)}
-                        ></Form.Control>
+                        <DateTimePicker onChange={setdateEnd} value={dateEnd} />
 
                     </Form.Group>
                     

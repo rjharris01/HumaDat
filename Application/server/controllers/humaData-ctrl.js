@@ -1,8 +1,17 @@
 import asyncHandler from 'express-async-handler'
 import HumaData from '../models/humaData-model.js'
 
+// @desc   Fetch all devices Ids 
+// @route  GET /api/data/devices/:id
+// @access Public
+const getDevices = asyncHandler( async (req,res) => {
+   
+    const data = await HumaData.find( { user: req.params.id }).distinct("device_id")
+    res.json(data)
+})
+
 // @desc   Fetch all data 
-// @route  GET /api/data
+// @route  GET /api/data/
 // @access Public
 const getHumadata = asyncHandler( async (req,res) => {
     const data = await HumaData.find({})
@@ -40,28 +49,25 @@ const addData = asyncHandler( async (req,res) => {
         throw new Error('Invalid data')
     }
 
-    
-
-
 })
 
 
 // @desc   Fetch all data 
-// @route  GET /api/data/:dateFrom/:dateTo
+// @route  GET /api/data/:dateFrom/:dateTo/:device_id
 // @access Public
 const getDataByDate = asyncHandler( async (req,res) => {
+    console.log(req.params.device_id,req.params.dateFrom,req.params.dateTo)
+    res.json([req.params.device_id,req.params.dateFrom,req.params.dateTo])
 
     const data = await HumaData.find({
         time: {
-        $gte: new Date("2019-09-26T04:58:30.996Z"),
-        $lt: new Date("2022-05-01T00:00:00.000Z")
-    }})
+            $gte: new Date("2019-09-26T04:58:32.996Z"),
+             $lt: new Date("2022-05-01T00:00:00.000Z")
+        },
+        device_id: new String( req.params.device_id) 
+    })
 
     
-
-
-
-    res.json([data])
 })
 
-export {getHumadata, addData,getDataByDate}
+export {getHumadata, addData,getDataByDate,getDevices}
