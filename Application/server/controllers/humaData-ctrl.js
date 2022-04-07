@@ -46,4 +46,22 @@ const addData = asyncHandler( async (req,res) => {
 })
 
 
-export {getHumadata, addData}
+// @desc   Fetch all data 
+// @route  GET /api/data/:dateFrom/:dateTo
+// @access Public
+const getDataByDate = asyncHandler( async (req,res) => {
+
+    const data = await HumaData.find({
+        time: {
+        $gte: new Date("2019-09-26T04:58:30.996Z"),
+        $lt: new Date("2022-05-01T00:00:00.000Z")
+    }})
+
+    
+
+
+
+    res.json([data])
+})
+
+export {getHumadata, addData,getDataByDate}
