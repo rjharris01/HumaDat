@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const HumaData = new Schema(
     {
         device_id: { type: String, required: true },
-        time: { type: [String], required: true },
+        time: { type: Date, required: true },
         hrValue: { type: Number, required: true },
         irValue: { type: Number, required: true },
         redlightValue: { type: Number, required: true },
