@@ -19,18 +19,18 @@ const addData = asyncHandler( async (req,res) => {
     try {
         for (const test2data of testdata){
             const data = await HumaData.create({
-                user: test2data[0],
-                device_id: test2data[1],
-                time: test2data[2],
-                hrValue: test2data[3],
-                irValue: test2data[4],
-                redlightValue: test2data[5],
-                validValue: test2data[6],
-                tempValue: test2data[7],
-                humidityValue: test2data[8],
-                xValue: test2data[9],
-                yValue: test2data[10],
-                zValue: test2data[11]
+                device_id: test2data[0],
+                time: test2data[1],
+                hrValue: test2data[2],
+                irValue: test2data[3],
+                redlightValue: test2data[4],
+                validValue: test2data[5],
+                tempValue: test2data[6],
+                humidityValue: test2data[7],
+                xValue: test2data[8],
+                yValue: test2data[9],
+                zValue: test2data[10],
+                user: test2data[11]
             })
         }
         res.status(201).json({})

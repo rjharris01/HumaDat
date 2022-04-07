@@ -13,7 +13,7 @@ const  FileUploadScreen = () => {
     const dispatch = useDispatch()
     const userLogin = useSelector(state => state.userLogin)
     const {loading, error, userInfo} = userLogin
-
+    
     const history = useNavigate()
     useEffect(()=> {
         if(!userInfo){
@@ -28,13 +28,21 @@ const  FileUploadScreen = () => {
             Papa.parse(acceptedFiles[0], {
               complete: function(results) {
                 console.log("Finished:", results.data.slice(0,-1));
-                dispatch(upload(results.data.slice(0,-1)))
+                const data = results.data.slice(0,-1);
+                const result = data.map( (item,i) => item.concat([userInfo._id]));
+                console.log(result)
+                //user id
+                console.log(userInfo._id)
+
+
+                dispatch(upload(result))
               }}
             )
           }
       }, [])
 
       const {getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject,} = useDropzone({onDrop, accept: '.hum',})
+      
 
   return (
     <>
