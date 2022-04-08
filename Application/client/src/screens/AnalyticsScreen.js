@@ -6,7 +6,8 @@ import {Table,Button,Row,Col, Container, Form} from 'react-bootstrap'
 import LineChart from '../components/chart/analyticsCharts';
 import DateTimePicker from 'react-datetime-picker';
 import Select from 'react-select';
-import {getById} from '../actions/dataActions'
+import {getById,getDevices} from '../actions/dataActions'
+
 const  AnalyticsScreen = () => {
 
     const history = useNavigate()
@@ -15,26 +16,43 @@ const  AnalyticsScreen = () => {
     const [device_id, setdevice_id] = useState('')
     const [dateEnd, setdateEnd] = useState(new Date());
     const [dateStart, setdateStart] = useState(new Date());
+    const [devicesLabels, setDevicesLabels] = useState([{ label: 'Shark', value: 'Shark' }])
 
 
+  
+    const dataDevices = useSelector((state) => state.dataDevices)   
+    const {loading, error, devices} = dataDevices
 
     const userLogin = useSelector((state) => state.userLogin)
     const {userInfo} = userLogin
+
+    
+    
+   
+
+
+    
 
     useEffect(()=> {
         if(!userInfo){
             history('/login')
         }
-    })
+        else{
+            
+            if(devices){
+                
+                setDevicesLabels(devices.map((  x ) => ({ label: x, value: x })))
+            }
 
-    const aquaticCreatures = [
-        { label: 'Shark', value: 'Shark' },
-        { label: 'Dolphin', value: 'Dolphin' },
-        { label: 'Whale', value: 'Whale' },
-        { label: 'Octopus', value: 'Octopus' },
-        { label: 'Crab', value: 'Crab' },
-        { label: 'Lobster', value: 'Lobster' },
-      ];
+            else{
+                dispatch(getDevices(userInfo._id))
+            }
+            
+        }
+       
+        
+       
+    },[dispatch,devices])
 
 
     const [xyzdata, setxyzdata] =  useState({
@@ -130,7 +148,7 @@ const  AnalyticsScreen = () => {
                 <Form onSubmit={submitHandler}>
                         <Form.Group controlId='device_id'>
                         <Form.Label>Device ID</Form.Label>
-                        <Select options={aquaticCreatures}
+                        <Select options={devicesLabels}
                         onChange={setdevice_id}/>
                         </Form.Group>
 

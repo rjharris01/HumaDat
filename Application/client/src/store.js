@@ -10,8 +10,12 @@ import {
     userUpdateReducer,
     userDeleteReducer
   } from './reducers/userReducers'
+  import {
+    dataDevicesReducer
+  } from './reducers/dataReducers'
 
 const reducer = combineReducers({  
+  dataDevices: dataDevicesReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
