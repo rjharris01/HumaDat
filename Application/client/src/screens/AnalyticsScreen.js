@@ -21,7 +21,11 @@ const  AnalyticsScreen = () => {
     const [devicesLabels, setDevicesLabels] = useState([{ label: 'Shark', value: 'Shark' }])
 
 
-  
+    const dataHumaData = useSelector((state) => state.dataHumaData)   
+    const {loading:dataLoading, error:dataError, data:humaData} = dataHumaData
+
+    console.log(humaData)
+
     const dataDevices = useSelector((state) => state.dataDevices)   
     const {loading, error, devices} = dataDevices
 

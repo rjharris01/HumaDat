@@ -59,8 +59,8 @@ const getDataByDate = asyncHandler( async (req,res) => {
 
     const data = await HumaData.find({
         time: {
-            $gte: new Date("2019-09-26T04:58:32.996Z"),
-             $lt: new Date("2022-05-01T00:00:00.000Z")
+            $gte: new Date(req.params.dateFrom),
+             $lt: new Date(req.params.dateTo)
         },
         device_id: new String( req.params.device_id) 
     })
