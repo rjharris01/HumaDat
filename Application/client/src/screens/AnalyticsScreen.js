@@ -7,6 +7,8 @@ import LineChart from '../components/chart/analyticsCharts';
 import DateTimePicker from 'react-datetime-picker';
 import Select from 'react-select';
 import {getById,getDevices} from '../actions/dataActions'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
 
 const  AnalyticsScreen = () => {
 
@@ -92,12 +94,8 @@ const  AnalyticsScreen = () => {
 
 
       const submitHandler = (e) => {
-          console.log(device_id.value)
-          console.log(dateStart.toISOString())
-          console.log(dateEnd.toISOString())
           dispatch(getById(dateStart.toISOString(),dateEnd.toISOString(),device_id.value))
           e.preventDefault()
-        //dispatch(login(email,password))
     }
 
 
@@ -143,6 +141,9 @@ const  AnalyticsScreen = () => {
                 </Table>
             </Row>
             </Col>
+            {error && <Message variant='danger'>{error}</Message>}
+            {loading ? (loading && <Loader/>) :
+            
         
 
                 <Form onSubmit={submitHandler}>
@@ -167,8 +168,9 @@ const  AnalyticsScreen = () => {
                         Search for data
                     </Button>
                 </Form>
-            
+                }
             </Row>
+            
             </Container>
         </>
     )

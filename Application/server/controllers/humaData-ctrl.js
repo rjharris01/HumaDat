@@ -55,9 +55,7 @@ const addData = asyncHandler( async (req,res) => {
 // @desc   Fetch all data 
 // @route  GET /api/data/:dateFrom/:dateTo/:device_id
 // @access Public
-const getDataByDate = asyncHandler( async (req,res) => {
-    console.log(req.params.device_id,req.params.dateFrom,req.params.dateTo)
-    res.json([req.params.device_id,req.params.dateFrom,req.params.dateTo])
+const getDataByDate = asyncHandler( async (req,res) => {  
 
     const data = await HumaData.find({
         time: {
@@ -66,6 +64,8 @@ const getDataByDate = asyncHandler( async (req,res) => {
         },
         device_id: new String( req.params.device_id) 
     })
+
+    res.json(data)
 
     
 })
