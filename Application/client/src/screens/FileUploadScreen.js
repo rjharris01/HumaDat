@@ -22,17 +22,13 @@ const  FileUploadScreen = () => {
     },[history, userInfo])
 
     const onDrop = useCallback(acceptedFiles => {
-        console.log(acceptedFiles)
         if (acceptedFiles) {
             console.log(acceptedFiles[0]);
             Papa.parse(acceptedFiles[0], {
               complete: function(results) {
-                console.log("Finished:", results.data.slice(0,-1));
+
                 const data = results.data.slice(0,-1);
                 const result = data.map( (item,i) => item.concat([userInfo._id]));
-                console.log(result)
-                //user id
-                console.log(userInfo._id)
 
 
                 dispatch(upload(result))
