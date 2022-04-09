@@ -22,6 +22,8 @@ const  AnalyticsScreen = () => {
     const [devicesLabels, setDevicesLabels] = useState([{ label:'' , value: '' }])
 
 
+    const [stats, setStats] = useState(null)
+
     const dataHumaData = useSelector((state) => state.dataHumaData)   
     const {loading:dataLoading, error:dataError, data:humaData} = dataHumaData
 
@@ -33,7 +35,53 @@ const  AnalyticsScreen = () => {
     const userLogin = useSelector((state) => state.userLogin)
     const {userInfo} = userLogin
 
+    const median = arr => {
+        const { length } = arr;
+        const temp = [...arr];
+        temp.sort((a, b) => a - b);
+        
+        if (length % 2 === 0) {
+          return (temp[length / 2 - 1] + temp[length / 2]) / 2;
+        }
+        
+        return temp[(length - 1) / 2];
+      };
+
+
+      const mode = arr => {
+        const mode = {};
+        let max = 0, count = 0;
+      
+        for(let i = 0; i < arr.length; i++) {
+          const item = arr[i];
+          
+          if(mode[item]) {
+            mode[item]++;
+          } else {
+            mode[item] = 1;
+          }
+          
+          if(count < mode[item]) {
+            max = item;
+            count = mode[item];
+          }
+        }
+         
+        return max;
+      };
     
+
+      const range = arr => {
+        const temp = [...arr];
+        temp.sort((a, b) => a - b);
+        
+        return Math.abs(temp[0] - temp[temp.length - 1]);
+      };
+
+      const findVal = (arr,val) => {
+        
+        return arr.indexOf(val);
+      };
    
    // const [xyzdata, setxyzdata] =  useState({
     //    labels  : [0,1,2,3,5,0,1,2,3,5],
@@ -86,7 +134,6 @@ const  AnalyticsScreen = () => {
       });
    
       
-
     
 
     useEffect(()=> {
@@ -100,6 +147,12 @@ const  AnalyticsScreen = () => {
             if(humaData){
                 
                 let tempDataset = xyzdata.datasets.slice(0)
+
+                
+               
+                
+             
+                
     
                 const time = humaData.map(a => a.time);
     
@@ -115,8 +168,19 @@ const  AnalyticsScreen = () => {
     
                 const hrData = humaData.map(a => a.hrValue);
              
+               
+
+
+
+
+
+
+
+
+
                 
                 tempDataset[0].data = xData
+                
                 tempDataset[1].data = yData
                 tempDataset[2].data = zData
                 
@@ -152,7 +216,138 @@ const  AnalyticsScreen = () => {
                     labels:   time,
                     datasets: tempDataset
                    })
+
+                   var tempStats = []
+
+
+
+                   var tempStat = {}
+                   let sum = xData.reduce((a, b) => a + b, 0);
+                   let mean =  Math.round(((sum / xData.length) + Number.EPSILON) * 100) / 100 || 0;
+                   let med = median(xData)
+                   let mod = mode(xData)
+                   let rang = range(xData)
+                   let minimum= Math.min(...xData)
+                   let maximum = Math.max(...xData)
+                   let minTime = time[findVal(xData,minimum)]
+                   let maxTime = time[findVal(xData,maximum)]
+                   let variable = "Accelerometer X"
+                   tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
+   
+              
+   
+   
+   
+                   tempStats.push(tempStat)
                    
+   
+                   
+                   var tempStat = {}
+                    sum = yData.reduce((a, b) => a + b, 0);
+                    mean =  Math.round(((sum / yData.length) + Number.EPSILON) * 100) / 100 || 0;
+                    med = median(yData)
+                    mod = mode(yData)
+                    rang = range(yData)
+                    minimum= Math.min(...yData)
+                    maximum = Math.max(...yData)
+                    minTime = time[findVal(yData,minimum)]
+                    maxTime = time[findVal(yData,maximum)]
+                    variable = "Accelerometer Y"
+                   tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
+   
+              
+   
+                   tempStats.push(tempStat)
+   
+                 
+   
+                   var tempStat = {}
+                   sum = zData.reduce((a, b) => a + b, 0);
+                   mean =  Math.round(((sum / zData.length) + Number.EPSILON) * 100) / 100 || 0;
+                   med = median(zData)
+                   mod = mode(zData)
+                   rang = range(zData)
+                   minimum= Math.min(...zData)
+                   maximum = Math.max(...zData)
+                   minTime = time[findVal(zData,minimum)]
+                   maxTime = time[findVal(zData,maximum)]
+                   variable = "Accelerometer Z"
+                   tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
+                   tempStats.push(tempStat)
+
+                   var tempStat = {}
+                   sum = temperatureData.reduce((a, b) => a + b, 0);
+                   mean =  Math.round(((sum / temperatureData.length) + Number.EPSILON) * 100) / 100 || 0;
+                   med = median(temperatureData)
+                   mod = mode(temperatureData)
+                   rang = range(temperatureData)
+                   minimum= Math.min(...temperatureData)
+                   maximum = Math.max(...temperatureData)
+                   minTime = time[findVal(temperatureData,minimum)]
+                   maxTime = time[findVal(temperatureData,maximum)]
+                   variable = "Temperature (°C)"
+                   tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
+                   tempStats.push(tempStat)
+
+                   var tempStat = {}
+                   sum = humidityData.reduce((a, b) => a + b, 0);
+                   mean =  Math.round(((sum / humidityData.length) + Number.EPSILON) * 100) / 100 || 0;
+                   med = median(humidityData)
+                   mod = mode(humidityData)
+                   rang = range(humidityData)
+                   minimum= Math.min(...humidityData)
+                   maximum = Math.max(...humidityData)
+                   minTime = time[findVal(humidityData,minimum)]
+                   maxTime = time[findVal(humidityData,maximum)]
+                   variable = "Humidity Data (%)"
+                   tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
+                   tempStats.push(tempStat)
+
+                   var tempStat = {}
+                   sum = hrData.reduce((a, b) => a + b, 0);
+                   mean =  Math.round(((sum / hrData.length) + Number.EPSILON) * 100) / 100 || 0;
+                   med = median(hrData)
+                   mod = mode(hrData)
+                   rang = range(hrData)
+                   minimum= Math.min(...hrData)
+                   maximum = Math.max(...hrData)
+                   minTime = time[findVal(hrData,minimum)]
+                   maxTime = time[findVal(hrData,maximum)]
+                   variable = "Heart Rate (BPM)"
+                   tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
+                   tempStats.push(tempStat)
+
+                   var tempStat = {}
+                   sum = ppgRedData.reduce((a, b) => a + b, 0);
+                   mean =  Math.round(((sum / ppgRedData.length) + Number.EPSILON) * 100) / 100 || 0;
+                   med = median(ppgRedData)
+                   mod = mode(ppgRedData)
+                   rang = range(ppgRedData)
+                   minimum= Math.min(...ppgRedData)
+                   maximum = Math.max(...ppgRedData)
+                   minTime = time[findVal(ppgRedData,minimum)]
+                   maxTime = time[findVal(ppgRedData,maximum)]
+                   variable = "PPG IR"
+                   tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
+                   tempStats.push(tempStat)
+
+                   var tempStat = {}
+                   sum = ppgIRData.reduce((a, b) => a + b, 0);
+                   mean =  Math.round(((sum / ppgIRData.length) + Number.EPSILON) * 100) / 100 || 0;
+                   med = median(ppgIRData)
+                   mod = mode(ppgIRData)
+                   rang = range(ppgIRData)
+                   minimum= Math.min(...ppgIRData)
+                   maximum = Math.max(...ppgIRData)
+                   minTime = time[findVal(ppgIRData,minimum)]
+                   maxTime = time[findVal(ppgIRData,maximum)]
+                   variable = "PPG RedLight"
+                   tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
+                   tempStats.push(tempStat)
+
+                   setStats(tempStats)
+              
+               
             }
 
             if(devices){
@@ -194,11 +389,12 @@ const  AnalyticsScreen = () => {
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
         <Sidebar/>
+        
         <Container >
         <h1>HumaDat Analytics</h1>
         <Row>
             <Col >
-           
+            
             {dataError && <Message variant='danger'>{dataError}</Message>}
             {humaData? ( dataLoading ? (dataLoading && <Loader/>) :
             <Col>
@@ -213,10 +409,10 @@ const  AnalyticsScreen = () => {
                     <thead>
                         <tr>
                         <th>Variable</th>
-                        <th>Lowest</th>
-                        <th>Lowest Time</th>
-                        <th>Peak</th>
-                        <th>Peak Time</th>
+                        <th>Minimum</th>
+                        <th>Minimum Time</th>
+                        <th>Maximum</th>
+                        <th>Maximum Time</th>
                         <th>Mean</th>
                         <th>Modal</th>
                         <th>Median</th>
@@ -224,6 +420,21 @@ const  AnalyticsScreen = () => {
                         </tr>
                     </thead>
                     <tbody>
+                        {stats? stats.map((stat) => 
+                        
+                         <tr>
+                             <td>{stat.variable}</td>
+                             <td>{stat.minimum}</td>
+                             <td>{stat.minTime}</td>
+                             <td>{stat.maximum}</td>
+                             <td>{stat.maxTime}</td>
+                             <td>{stat.mean}</td>
+                             <td>{stat.mod}</td>
+                             <td>{stat.med}</td>
+                             <td>{stat.rang}</td>
+                         </tr>
+                        
+                        ): null}
                     </tbody>
                 </Table>
             </Row>
