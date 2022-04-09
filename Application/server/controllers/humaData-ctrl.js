@@ -2,12 +2,15 @@ import asyncHandler from 'express-async-handler'
 import HumaData from '../models/humaData-model.js'
 
 // @desc   Fetch all devices Ids 
-// @route  GET /api/data/devices/:id
+// @route  GET /api/data/info/:id
 // @access Public
-const getDevices = asyncHandler( async (req,res) => {
-   
+const getInfo = asyncHandler( async (req,res) => {
     const data = await HumaData.find( { user: req.params.id }).distinct("device_id")
-    res.json(data)
+    const count = await HumaData.count( { user: req.params.id })
+    const start = await HumaData.findOne({},{},{sort:{'time': 1}})
+    const end = await HumaData.findOne({},{},{sort:{'time': -1}})
+    console.log([[data],[count],[start.time],[end.time]])
+    res.json([data,[count],[start.time],[end.time]])
 })
 
 // @desc   Fetch all data 
@@ -70,4 +73,4 @@ const getDataByDate = asyncHandler( async (req,res) => {
     
 })
 
-export {getHumadata, addData,getDataByDate,getDevices}
+export {getHumadata, addData,getDataByDate,getInfo}

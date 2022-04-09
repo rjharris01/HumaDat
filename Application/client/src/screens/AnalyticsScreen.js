@@ -6,7 +6,7 @@ import {Table,Button,Row,Col, Container, Form} from 'react-bootstrap'
 import LineChart from '../components/chart/analyticsCharts';
 import DateTimePicker from 'react-datetime-picker';
 import Select from 'react-select';
-import {getById,getDevices} from '../actions/dataActions'
+import {getById,getInfo} from '../actions/dataActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
@@ -24,15 +24,15 @@ const  AnalyticsScreen = () => {
     const dataHumaData = useSelector((state) => state.dataHumaData)   
     const {loading:dataLoading, error:dataError, data:humaData} = dataHumaData
 
-    console.log(humaData)
+    
+    const dataInfo = useSelector((state) => state.dataInfo)   
+    const {loading, error, devices, dataLen, dataStart,dataEnd} = dataInfo
 
-    const dataDevices = useSelector((state) => state.dataDevices)   
-    const {loading, error, devices} = dataDevices
+    
 
     const userLogin = useSelector((state) => state.userLogin)
     const {userInfo} = userLogin
 
-    
     
    
 
@@ -40,18 +40,22 @@ const  AnalyticsScreen = () => {
     
 
     useEffect(()=> {
+        
+
         if(!userInfo){
             history('/login')
         }
+        
         else{
             
+           
             if(devices){
                 
                 setDevicesLabels(devices.map((  x ) => ({ label: x, value: x })))
             }
 
             else{
-                dispatch(getDevices(userInfo._id))
+                dispatch(getInfo(userInfo._id))
             }
             
         }
@@ -116,7 +120,18 @@ const  AnalyticsScreen = () => {
         <h1>HumaDat Analytics</h1>
             <Row>
                 <Col>
-                        XYZ
+                
+                {humaData? (humaData.length > 1 &&  
+                    (
+                        humaData.map((data) => (
+                        <li >
+                        <a key={data._id}>{data._id}</a>
+                        </li>
+                    
+                    
+                    
+                        )))) : null}
+
                 </Col>
             </Row>
 
@@ -156,6 +171,13 @@ const  AnalyticsScreen = () => {
                         <Select options={devicesLabels}
                         onChange={setdevice_id}/>
                         </Form.Group>
+                        <Col>
+                        <p> 
+                        <br /> You have: {dataLen} total records
+                        <br /> Start: {dataStart} 
+                        <br /> And  
+                        <br /> End: {dataEnd} </p>
+                        </Col>
 
                     <Form.Group controlId='dateStart'>
                         <Form.Label>Start of data: </Form.Label>

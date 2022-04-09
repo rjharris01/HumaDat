@@ -11,13 +11,13 @@ import {
     userDeleteReducer
   } from './reducers/userReducers'
   import {
-    dataDevicesReducer,
+    dataInfoReducer,
     dataHumaDataReducer
   } from './reducers/dataReducers'
 
 const reducer = combineReducers({  
   dataHumaData: dataHumaDataReducer,
-  dataDevices: dataDevicesReducer,
+  dataInfo: dataInfoReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,

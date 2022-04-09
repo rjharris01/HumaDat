@@ -1,6 +1,5 @@
 import './App.css';
 import {BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import {Container} from 'react-bootstrap'
 
 import BleScreen from "./screens/BleScreen"
 import LoginScreen from './screens/LoginScreen'

@@ -6,6 +6,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import Dropzone, {useDropzone} from 'react-dropzone';
 import FormContainer from '../components/FormContainer';
 import {upload} from '../actions/uploadActions'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
 
 
 const  FileUploadScreen = () => {
@@ -43,7 +45,9 @@ const  FileUploadScreen = () => {
   return (
     <>
     <Sidebar/>
+    {error && <Message variant='danger'>{error}</Message>}
     <FormContainer>
+    
     <div
         {...getRootProps({
           className: `dropzone 
@@ -58,6 +62,7 @@ const  FileUploadScreen = () => {
           <p>Drag 'n' drop some file here, or click to select file</p>
       }
     </div>
+     
     </FormContainer>
   
     </>
