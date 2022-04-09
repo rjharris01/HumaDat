@@ -9,7 +9,6 @@ const getInfo = asyncHandler( async (req,res) => {
     const count = await HumaData.count( { user: req.params.id })
     const start = await HumaData.findOne({},{},{sort:{'time': 1}})
     const end = await HumaData.findOne({},{},{sort:{'time': -1}})
-    console.log([[data],[count],[start.time],[end.time]])
     res.json([data,[count],[start.time],[end.time]])
 })
 

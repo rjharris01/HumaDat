@@ -102,8 +102,8 @@ const  AnalyticsScreen = () => {
 
 
       const submitHandler = (e) => {
-          dispatch(getById(dateStart.toISOString(),dateEnd.toISOString(),device_id.value))
           e.preventDefault()
+          dispatch(getById(dateStart.toISOString(),dateEnd.toISOString(),device_id.value))
     }
 
 
@@ -124,8 +124,8 @@ const  AnalyticsScreen = () => {
                 {humaData? (humaData.length > 1 &&  
                     (
                         humaData.map((data) => (
-                        <li >
-                        <a key={data._id}>{data._id}</a>
+                        <li key={data._id} >
+                        <a>{data._id}</a>
                         </li>
                     
                     
