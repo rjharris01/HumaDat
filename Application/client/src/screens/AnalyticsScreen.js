@@ -420,21 +420,21 @@ const  AnalyticsScreen = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {stats? stats.map((stat) => 
+                    {stats? stats.map((stat) => 
                         
-                         <tr>
-                             <td>{stat.variable}</td>
-                             <td>{stat.minimum}</td>
-                             <td>{stat.minTime}</td>
-                             <td>{stat.maximum}</td>
-                             <td>{stat.maxTime}</td>
-                             <td>{stat.mean}</td>
-                             <td>{stat.mod}</td>
-                             <td>{stat.med}</td>
-                             <td>{stat.rang}</td>
-                         </tr>
-                        
-                        ): null}
+                        <tr>
+                            <td key={stat.variable.key}>{stat.variable}</td>
+                            <td key={stat.minimum.key}>{stat.minimum}</td>
+                            <td key={stat.minTime.key}>{stat.minTime}</td>
+                            <td key={stat.maximum.key}>{stat.maximum}</td>
+                            <td key={stat.maxTime}>{stat.maxTime}</td>
+                            <td key={stat.mean.key}>{stat.mean}</td>
+                            <td key={stat.mod.key}>{stat.mod}</td>
+                            <td key={stat.med.key}>{stat.med}</td>
+                            <td key={stat.rang.key}>{stat.rang}</td>
+                        </tr>
+                       
+                       ): null}
                     </tbody>
                 </Table>
             </Row>
@@ -480,6 +480,7 @@ const  AnalyticsScreen = () => {
                 </Form>
                 }
                {humaData? (<CsvPasser csvData = {humaData} variant='info'/>):null}
+              
                
                     
             
