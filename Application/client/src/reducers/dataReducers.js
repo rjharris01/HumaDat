@@ -19,7 +19,12 @@ export const dataHumaDataReducer = (state = {}, action) => {
         case DATA_GET_DATA_ID_REQUEST:
             return { loading: true}
         case DATA_GET_DATA_ID_SUCCESS:
-            return {loading: false, data: action.payload }
+            if (action.payload.length == 0 ){
+                return {loading: false, data: null}
+            }
+            else{
+                return {loading: false, data: action.payload }
+            }
         case DATA_GET_DATA_ID_FAIL:
             return {loading: false, error: action.payload}
         default:

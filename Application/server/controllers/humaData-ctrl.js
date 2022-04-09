@@ -5,11 +5,17 @@ import HumaData from '../models/humaData-model.js'
 // @route  GET /api/data/info/:id
 // @access Public
 const getInfo = asyncHandler( async (req,res) => {
+    try {
     const data = await HumaData.find( { user: req.params.id }).distinct("device_id")
     const count = await HumaData.count( { user: req.params.id })
     const start = await HumaData.findOne({},{},{sort:{'time': 1}})
     const end = await HumaData.findOne({},{},{sort:{'time': -1}})
     res.json([data,[count],[start.time],[end.time]])
+    }
+    catch{
+    res.status(400)
+    throw new Error('Invalid data')
+    }
 })
 
 // @desc   Fetch all data 

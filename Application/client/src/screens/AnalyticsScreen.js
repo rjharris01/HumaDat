@@ -9,6 +9,7 @@ import Select from 'react-select';
 import {getById,getInfo} from '../actions/dataActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import CsvPasser from '../components/CsvPasser';
 
 const  AnalyticsScreen = () => {
 
@@ -18,41 +19,148 @@ const  AnalyticsScreen = () => {
     const [device_id, setdevice_id] = useState('')
     const [dateEnd, setdateEnd] = useState(new Date());
     const [dateStart, setdateStart] = useState(new Date());
-    const [devicesLabels, setDevicesLabels] = useState([{ label: 'Shark', value: 'Shark' }])
+    const [devicesLabels, setDevicesLabels] = useState([{ label:'' , value: '' }])
 
 
     const dataHumaData = useSelector((state) => state.dataHumaData)   
     const {loading:dataLoading, error:dataError, data:humaData} = dataHumaData
 
-    
+
     const dataInfo = useSelector((state) => state.dataInfo)   
     const {loading, error, devices, dataLen, dataStart,dataEnd} = dataInfo
 
-    
 
     const userLogin = useSelector((state) => state.userLogin)
     const {userInfo} = userLogin
 
     
    
+   // const [xyzdata, setxyzdata] =  useState({
+    //    labels  : [0,1,2,3,5,0,1,2,3,5],
+    //    datasets: [{data:[0,1,2,3,5,0,1,2,3,5], label: 'x',borderColor: 'rgb(75, 192, 89)'},
+    //    {data:[2,4,6,7,9,4,2,4,6,4],label: 'y',borderColor: 'rgb(196, 118, 22)'},
+    //    {data:[0,6,2,9,4,2,8,6,2,3], label: 'z',borderColor: 'rgb(196, 63, 22)'}]
+    //  });
 
+    const [xyzdata, setxyzData] =  useState({
+        labels  : [],
+        datasets: [
+        {
+            data:[], 
+            label: 'x',
+            borderColor: 'rgb(75, 192, 89)'
+        },
+        {
+            data:[],
+            label: 'y',
+            borderColor: 'rgb(196, 118, 22)'
+        },
+        {
+            data:[], 
+            label: 'z',
+            borderColor: 'rgb(196, 63, 22)'}]
+      });
+
+
+      const [TandHdata, setTandHdata] =  useState({
+        labels  : [],
+        datasets: [{data:[],
+        label: 'Temperature (°C)', borderColor: 'rgb(75, 192, 192)'},
+        {data:[],
+         label: 'Humidity %',borderColor: 'rgb(75, 98, 192)'}]
+      });
+
+
+      const [HRdata, setHRdata] =  useState({
+        labels  : [],
+        datasets: [{data:[],
+        label: 'HR',borderColor: 'rgb(196, 25, 22)'}]
+      });
+
+
+      const [PPGdata, setPPGdata] =  useState({
+        labels  : [],
+        datasets: [{data:[],
+        label: 'IR', borderColor: 'rgb(86, 42, 173)'}, {data:[],
+            label: 'Red',borderColor: 'rgb(184, 61, 182)'}]
+      });
+   
+      
 
     
 
     useEffect(()=> {
         
-
+        
         if(!userInfo){
             history('/login')
         }
-        
+       
         else{
-            
-           
+            if(humaData){
+                
+                let tempDataset = xyzdata.datasets.slice(0)
+    
+                const time = humaData.map(a => a.time);
+    
+                const xData = humaData.map(a => a.xValue);
+                const yData = humaData.map(a => a.yValue);
+                const zData = humaData.map(a => a.zValue);
+    
+                const humidityData = humaData.map(a => a.humidityValue);
+                const temperatureData = humaData.map(a => a.tempValue);
+    
+                const ppgIRData = humaData.map(a => a.irValue);
+                const ppgRedData = humaData.map(a => a.redlightValue);
+    
+                const hrData = humaData.map(a => a.hrValue);
+             
+                
+                tempDataset[0].data = xData
+                tempDataset[1].data = yData
+                tempDataset[2].data = zData
+                
+                setxyzData({
+                     labels:   time,
+                     datasets: tempDataset
+                    })
+    
+               
+                tempDataset = TandHdata.datasets.slice(0)
+                tempDataset[0].data = temperatureData
+                tempDataset[1].data = humidityData
+    
+                setTandHdata({
+                    labels:   time,
+                    datasets: tempDataset
+                   })
+    
+                tempDataset = HRdata.datasets.slice(0)
+                tempDataset[0].data= hrData
+    
+                setHRdata({
+                    labels:   time,
+                    datasets: tempDataset
+                   })
+    
+                tempDataset = PPGdata.datasets.slice(0)
+                tempDataset[0].data = ppgIRData
+                tempDataset[1].data = ppgRedData
+    
+                
+                setPPGdata({
+                    labels:   time,
+                    datasets: tempDataset
+                   })
+                   
+            }
+
             if(devices){
                 
                 setDevicesLabels(devices.map((  x ) => ({ label: x, value: x })))
             }
+
+            
 
             else{
                 dispatch(getInfo(userInfo._id))
@@ -62,50 +170,21 @@ const  AnalyticsScreen = () => {
        
         
        
-    },[dispatch,devices])
+    },[dispatch,devices,humaData])
 
 
-    const [xyzdata, setxyzdata] =  useState({
-        labels  : [0,1,2,3,5,0,1,2,3,5],
-        datasets: [{data:[0,1,2,3,5,0,1,2,3,5],
-        label: 'x',
-        borderColor: 'rgb(75, 192, 89)'},
-        {data:[2,4,6,7,9,4,2,4,6,4],
-        label: 'y',borderColor: 'rgb(196, 118, 22)'},
-        {data:[0,6,2,9,4,2,8,6,2,3],
-        label: 'z',borderColor: 'rgb(196, 63, 22)'}]
-      });
 
 
-      const [TandHdata, setTandHdata] =  useState({
-        labels  : [0,1,2,3,5],
-        datasets: [{data:[3,5,6,4,2,5],
-        label: 'Temperature (°C)', borderColor: 'rgb(75, 192, 192)'},
-        {data:[5,3,2,4,5,1],
-         label: 'Humidity %',borderColor: 'rgb(75, 98, 192)'}]
-      });
-
-
-      const [HRdata, setHRdata] =  useState({
-        labels  : [0,1,2,3,5],
-        datasets: [{data:[0,1,2,3,4,5],
-        label: 'HR',borderColor: 'rgb(196, 25, 22)'}]
-      });
-
-
-      const [PPGdata, setPPGdata] =  useState({
-        labels  : [0,1,2,3,5],
-        datasets: [{data:[0,1,3,3,4,2],
-        label: 'IR', borderColor: 'rgb(86, 42, 173)'}, {data:[5,2,1,3,2,5],
-            label: 'Red',borderColor: 'rgb(184, 61, 182)'}]
-      });
+      
 
 
       const submitHandler = (e) => {
           e.preventDefault()
           dispatch(getById(dateStart.toISOString(),dateEnd.toISOString(),device_id.value))
+          
     }
 
+    
 
     return (
         <>
@@ -116,30 +195,19 @@ const  AnalyticsScreen = () => {
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
         <Sidebar/>
         <Container >
-        <Row>
         <h1>HumaDat Analytics</h1>
-            <Row>
-                <Col>
-                
-                {humaData? (humaData.length > 1 &&  
-                    (
-                        humaData.map((data) => (
-                        <li key={data._id} >
-                        <a>{data._id}</a>
-                        </li>
-                    
-                    
-                    
-                        )))) : null}
-
-                </Col>
-            </Row>
-
+        <Row>
+            <Col >
+           
+            {dataError && <Message variant='danger'>{dataError}</Message>}
+            {humaData? ( dataLoading ? (dataLoading && <Loader/>) :
             <Col>
-            <Row>
                 <LineChart xyz={xyzdata} TandHdata={TandHdata} HRdata = {HRdata} PPGdata = {PPGdata}/>
-                
-            </Row>
+            </Col>):
+            
+            <Col>
+                <Message variant='info'>No data to display</Message>
+            </Col>}
             <Row>
                 <Table striped bordered hover>
                     <thead>
@@ -160,22 +228,27 @@ const  AnalyticsScreen = () => {
                 </Table>
             </Row>
             </Col>
+        
+            <Col>
             {error && <Message variant='danger'>{error}</Message>}
             {loading ? (loading && <Loader/>) :
             
         
 
-                <Form onSubmit={submitHandler}>
+                <Form onSubmit={submitHandler} >
                         <Form.Group controlId='device_id'>
                         <Form.Label>Device ID</Form.Label>
+                    
                         <Select options={devicesLabels}
                         onChange={setdevice_id}/>
+                        
+                       
                         </Form.Group>
                         <Col>
                         <p> 
-                        <br /> You have: {dataLen} total records
-                        <br /> Start: {dataStart} 
-                        <br /> And  
+                        <br /> You have: {dataLen? (dataLen):0} total records
+                        <br /> Between
+                        <br /> Start: {dataStart}  
                         <br /> End: {dataEnd} </p>
                         </Col>
 
@@ -191,13 +264,21 @@ const  AnalyticsScreen = () => {
                     </Form.Group>
                     
                     <Button type='submit' variant='primary m-2'>
-                        Search for data
+                        Show data analytics
                     </Button>
                 </Form>
                 }
+               {humaData? (<CsvPasser csvData = {humaData} variant='info'/>):null}
+               
+                    
+            
+            </Col>
+            
+           
             </Row>
             
             </Container>
+            
         </>
     )
 }
