@@ -479,7 +479,12 @@ const  AnalyticsScreen = () => {
                     </Button>
                 </Form>
                 }
-               {humaData? (<CsvPasser csvData = {humaData} variant='info'/>):null}
+               {humaData? (
+                   stats? (
+                    <CsvPasser csvData = {humaData} stats = {stats} variant='primary m-2'/>
+                   ):null
+               
+               ):null}
               
                
                     
