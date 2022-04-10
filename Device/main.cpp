@@ -8,6 +8,10 @@
 #include "ADXL345.h"
 #include "algorithm.h"
 #include "MAX30102.h"
+#include "BlockDevice.h"
+#include "FATFileSystem.h"
+
+
 
 
 // Blinking rate in milliseconds
@@ -16,14 +20,14 @@
 
 #define MAX_BRIGHTNESS 255
 
+#define BUFFER_MAX_LEN 10 
+#define FORCE_REFORMAT = true;
 
-
-
+BlockDevice *bd = BlockDevice::get_default_instance();
+FATFileSystem fs("sd");
 
 DHT dht(PA_1,DHTTYPE);
 ADXL345 accelerometer(PA_7, PA_6,PB_3,PB_6); //PinName mosi, PinName miso, PinName sck, PinName cs
-
-
 DigitalIn INT(PC_7);  //pin PC_7 connects to the interrupt output pin of the MAX30102
                  
                  
@@ -46,6 +50,15 @@ int main()
     int i;
     int32_t n_brightness;
     float f_temp;
+
+    //Check the sd card//
+    int err = fs.mount(bd);
+    printf("%s\r\n", (err ? "SD card Fail :(" : "SD card OK"));  
+    if(err)
+    {
+        return 0;
+    }
+    //Check the sd card//
 
     maxim_max30102_reset(); //resets the MAX30102
     ThisThread::sleep_for(1s);
