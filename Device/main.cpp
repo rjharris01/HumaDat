@@ -136,6 +136,8 @@ int main()
 
 
         error = dht.readData();
+
+        
         if (0 == error){
              //HEART BEAT//
                 for(i=100;i<500;i++)
