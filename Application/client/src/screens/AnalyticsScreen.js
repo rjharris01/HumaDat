@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from "../components/sidebar/sidebar";
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux'
-import {Table,Button,Row,Col, Container, Form} from 'react-bootstrap'
+import {Table,Button,Row,Col, Container, Form,Card} from 'react-bootstrap'
 import LineChart from '../components/chart/analyticsCharts';
 import DateTimePicker from 'react-datetime-picker';
 import Select from 'react-select';
@@ -369,7 +369,7 @@ const  AnalyticsScreen = () => {
 
 
 
-
+    
       
 
 
@@ -391,7 +391,14 @@ const  AnalyticsScreen = () => {
         <Sidebar/>
         
         <Container >
-        <h1>HumaDat Analytics</h1>
+        <Card
+         bg={"white"}
+         text={'dark'}
+         style={{ width: '80vw' }}
+         className="mb-2"
+        >
+        <Card.Header>HumaDat Analytics</Card.Header>
+        <Card.Body>
         <Row>
             <Col >
             
@@ -420,14 +427,15 @@ const  AnalyticsScreen = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {stats? stats.map((stat) => 
+                    {stats? stats.map(stat=> 
+                        
                         
                         <tr>
                             <td key={stat.variable.key}>{stat.variable}</td>
                             <td key={stat.minimum.key}>{stat.minimum}</td>
                             <td key={stat.minTime.key}>{stat.minTime}</td>
                             <td key={stat.maximum.key}>{stat.maximum}</td>
-                            <td key={stat.maxTime}>{stat.maxTime}</td>
+                            <td key={stat.maxTime.key}>{stat.maxTime}</td>
                             <td key={stat.mean.key}>{stat.mean}</td>
                             <td key={stat.mod.key}>{stat.mod}</td>
                             <td key={stat.med.key}>{stat.med}</td>
@@ -469,19 +477,18 @@ const  AnalyticsScreen = () => {
                     </Form.Group>
 
                     <Form.Group controlId='dateEnd'>
-                        <Form.Label>End of Data</Form.Label>
-                        <DateTimePicker onChange={setdateEnd} value={dateEnd} />
-
+                        <Form.Label>End of data:</Form.Label>
+                            <DateTimePicker onChange={setdateEnd} value={dateEnd} />
                     </Form.Group>
                     
-                    <Button type='submit' variant='primary m-2'>
+                    <Button type='submit' variant='primary m-3'>
                         Show data analytics
                     </Button>
                 </Form>
                 }
                {humaData? (
                    stats? (
-                    <CsvPasser csvData = {humaData} stats = {stats} variant='primary m-2'/>
+                    <CsvPasser csvData = {humaData} stats = {stats} variant='primary m-3'/>
                    ):null
                
                ):null}
@@ -493,6 +500,9 @@ const  AnalyticsScreen = () => {
             
            
             </Row>
+            </Card.Body>
+            <Card.Footer className="text-muted"></Card.Footer>
+            </Card>
             
             </Container>
             

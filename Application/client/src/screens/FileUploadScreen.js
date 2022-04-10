@@ -4,10 +4,11 @@ import Sidebar from "../components/sidebar/sidebar";
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux'
 import Dropzone, {useDropzone} from 'react-dropzone';
-import FormContainer from '../components/FormContainer';
+import { Container } from 'react-bootstrap';
 import {upload} from '../actions/uploadActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import { Card } from 'react-bootstrap';
 
 
 const  FileUploadScreen = () => {
@@ -46,9 +47,20 @@ const  FileUploadScreen = () => {
     <>
     <Sidebar/>
     {error && <Message variant='danger'>{error}</Message>}
-    <FormContainer>
     
-    <div
+    <Container>
+
+    <Card
+         bg={"white"}
+         text={'dark'}
+         style={{ width: '80vw' }}
+         className="text-center"
+        >
+        <Card.Header>File Upload</Card.Header>
+        <Card.Body>
+          <Card.Title>How to Use</Card.Title>
+          <Card.Text>Simply drag, drop or select .hum files to upload them to database</Card.Text>
+          <div
         {...getRootProps({
           className: `dropzone 
           ${isDragAccept && 'dropzoneAccept'} 
@@ -58,12 +70,17 @@ const  FileUploadScreen = () => {
       <input {...getInputProps()} />
       {
         isDragActive ?
-          <p>Drop the file here ...</p> :
-          <p>Drag 'n' drop some file here, or click to select file</p>
+          <Card.Text>Drop the file here ...</Card.Text> :
+          <Card.Text>Drag 'n' drop some file here, or click to select file</Card.Text>
       }
     </div>
+        </Card.Body>
+        <Card.Footer className="text-muted"/>
+      </Card>
+    
+   
      
-    </FormContainer>
+    </Container>
   
     </>
   );

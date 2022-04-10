@@ -6,6 +6,7 @@ import Chart from '../components/chart/chart';
 import { useSelector} from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/sidebar/sidebar"
+import { Button, Card, Container } from 'react-bootstrap';
 
 
 const BleScreen = (props) => {
@@ -372,27 +373,40 @@ const BleScreen = (props) => {
   return (
       <div>
       <Sidebar/>
-      <div className="container">
+      
+      <Container>
+
+      <Card
+         bg={"white"}
+         text={'dark'}
+         style={{ width: '80vw' }}
+         className="mb-2"
+        >
+        <Card.Header>BLE Connection</Card.Header>
+        <Card.Body>
+          <Card.Title>Live HumaDat Data</Card.Title>
+          <div className="bluetoothConnect">
+          {supportsBluetooth && !isDisconnected &&
+                <Chart updateData={Humadata} />
+          }
+          {supportsBluetooth && isDisconnected &&
+          <div className="BluetoothButton">
+            <IconButton sx={{ color: blue[500] }} onClick={connectToDeviceAndSubscribeToUpdates}>
+            <BluetoothConnectedIcon />
+            </IconButton>
+            <p>Press the Blutooth symbol to connect to a HumaDat device</p>
+          </div>
+          }
+          {!supportsBluetooth &&
+            <p>This browser doesn't support the Web Bluetooth API</p>
+          }
+          </div>
+        </Card.Body>
+        <Card.Footer className="text-muted"></Card.Footer>
+      </Card>
         
-        <div className="bluetoothConnect">
-        <h1>Live HumaDat Data</h1>
-        {supportsBluetooth && !isDisconnected &&
-              //<p>Battery level: {batteryLevel}</p>
-              <Chart updateData={Humadata} />
-        }
-        {supportsBluetooth && isDisconnected &&
-        <div className="BluetoothButton">
-          <IconButton sx={{ color: blue[500] }} onClick={connectToDeviceAndSubscribeToUpdates}>
-          <BluetoothConnectedIcon />
-          </IconButton>
-          <p>Connect to a HumaDat device</p>
-        </div>
-        }
-        {!supportsBluetooth &&
-          <p>This browser doesn't support the Web Bluetooth API</p>
-        }
-        </div>
-        </div>
+        
+        </Container>
 
       </div>
   );

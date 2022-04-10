@@ -9,6 +9,7 @@ import FormContainer from '../components/FormContainer'
 import {login } from '../actions/userActions'
 import Sidebar from '../components/sidebar/sidebar';
 
+
 const LoginScreen = () => {
 
     const location = useLocation()
@@ -39,8 +40,8 @@ const LoginScreen = () => {
     return <div>
         <Sidebar/>
         <FormContainer>
+        <h1> Login </h1>
         
-        <h1>Sign In</h1>
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader/>}
         <Form onSubmit={submitHandler}>
