@@ -39,7 +39,8 @@ const LoginScreen = () => {
 
     return <div>
         <Sidebar/>
-        <FormContainer>
+        <Row>
+        <Col md={{span:3, offset:5}}>
         <h1> Login </h1>
         
         {error && <Message variant='danger'>{error}</Message>}
@@ -75,12 +76,13 @@ const LoginScreen = () => {
         <Row className='py-3'>
             <Col>
                 New User? {"  "}
-                <Link to={redirect ? `/register?redirect=${redirect}`: '/register'}>
+                <Link className='link-primary' to={redirect ? `/register?redirect=${redirect}`: '/register'}>
                       Register
                 </Link>
             </Col>
         </Row>
-    </FormContainer> 
+    </Col> 
+    </Row>
     </div>
 }
 
