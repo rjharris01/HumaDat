@@ -120,7 +120,8 @@ main {
   }
 
   .container {
-    margin-left: 0rem;
+    margin-left: 0vw;
+    width: 100vw;
   }
 }
 
@@ -142,6 +143,10 @@ main {
   .navbar:hover .link-text {
     display: block;
     transition: opacity var(--transition-speed);
+  }
+  .container {
+    margin-left: 10vw;
+    width: 100vw;
   }
 }
 

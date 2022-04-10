@@ -379,8 +379,7 @@ const BleScreen = (props) => {
       <Card
          bg={"white"}
          text={'dark'}
-         style={{ width: '80vw' }}
-         className="mb-2"
+         style={{ width: '80vw'}}
         >
         <Card.Header>BLE Connection</Card.Header>
         <Card.Body>
