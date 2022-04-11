@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { blue } from '@mui/material/colors';
+import { blue, red } from '@mui/material/colors';
 import {IconButton} from '@mui/material';
 import BluetoothConnectedIcon from '@mui/icons-material/BluetoothConnected';
 import Chart from '../components/chart/chart';
@@ -119,6 +119,15 @@ const BleScreen = (props) => {
     }
   }, []);
 
+
+  const deviceDisconnect= () =>{
+ 
+
+    setIsDisconnected(true)
+  
+    
+  }
+
   /**
    * Let the user know when their device has been disconnected.
    */
@@ -217,7 +226,7 @@ const BleScreen = (props) => {
   const connectToDeviceAndSubscribeToUpdates = async () => {
     try {
       // Search for Bluetooth devices that advertise a battery service
-      const device = await navigator.bluetooth
+       const device = await navigator.bluetooth
         .requestDevice({
           filters: [{name: 'Humadat'}],
           optionalServices:[tempService,hrService,accService,humService,validService]
@@ -375,18 +384,34 @@ const BleScreen = (props) => {
       <Sidebar/>
       
       <Container>
+      
 
       <Card
          bg={"white"}
          text={'dark'}
          style={{ width: '80vw'}}
         >
+        <Card>
         <Card.Header>BLE Connection</Card.Header>
         <Card.Body>
           <Card.Title>Live HumaDat Data</Card.Title>
+        </Card.Body>
+        </Card>
           <div className="bluetoothConnect">
           {supportsBluetooth && !isDisconnected &&
-                <Chart updateData={Humadata} />
+          <>
+         <div className="BluetoothButton">
+            <IconButton sx={{ color: red[500] }} onClick={deviceDisconnect}>
+            <BluetoothConnectedIcon />
+            </IconButton>
+            <p>Press the Blutooth symbol to disconnect from HumaDat device</p>
+          </div>
+         <Card.Body>
+          <Chart updateData={Humadata} />
+         </Card.Body>
+        
+         </>
+                
           }
           {supportsBluetooth && isDisconnected &&
           <div className="BluetoothButton">
@@ -400,7 +425,7 @@ const BleScreen = (props) => {
             <p>This browser doesn't support the Web Bluetooth API</p>
           }
           </div>
-        </Card.Body>
+       
         <Card.Footer className="text-muted"></Card.Footer>
       </Card>
         
