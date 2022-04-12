@@ -18,7 +18,7 @@
 
 
 // Blinking rate in milliseconds
-#define POLLING_RATE     2s
+#define POLLING_RATE     1s
 #define DHTTYPE DHT11
 
 #define MAX_BRIGHTNESS 255
@@ -46,11 +46,15 @@ int8_t  ch_hr_valid;    //indicator to show if the heart rate calculation is val
 uint8_t uch_dummy;
 
 
-void checkSerial(){
-   
+void checkSerial(int HR,int RL,int IR, int SP02,int VALID, int X, int Y, int Z,int HUM, int TEMP){
+    
+    
 
-    char msg[] = "asd\n";
-    char buff;
+    char msg[64];
+
+
+
+    snprintf(msg,64,"<%d,%d,%d,%d,%d,%d,%d,%d,%d,%d>",HR,RL,IR,SP02,VALID,X,Y,Z,HUM,TEMP);
     serial_port.write(msg, sizeof(msg));
 
 }
@@ -149,7 +153,7 @@ int main()
 
 
     while (true) {
-       checkSerial();
+      
         //HEART BEAT//
         i=0;
         un_min=0x3FFFF;
@@ -228,9 +232,9 @@ int main()
             printf("%d %% \n",humidity);
             ThisThread::sleep_for(POLLING_RATE);
 
-             printf("%i, %i, %i\n", (int16_t)accReadings[0], (int16_t)accReadings[1], (int16_t)accReadings[2]);   
+            printf("%i, %i, %i\n", (int16_t)accReadings[0], (int16_t)accReadings[1], (int16_t)accReadings[2]);   
                 
-               
+            checkSerial(n_heart_rate,aun_red_buffer[i],aun_ir_buffer[i],n_sp02,(ch_spo2_valid + ch_hr_valid),(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2],humidity,temperature);
 
          }
          
