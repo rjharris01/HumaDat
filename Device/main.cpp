@@ -14,6 +14,9 @@
 
 
 
+
+
+
 // Blinking rate in milliseconds
 #define POLLING_RATE     2s
 #define DHTTYPE DHT11
@@ -29,7 +32,8 @@ FATFileSystem fs("sd");
 DHT dht(PA_1,DHTTYPE);
 ADXL345 accelerometer(PA_7, PA_6,PB_3,PB_6); //PinName mosi, PinName miso, PinName sck, PinName cs
 DigitalIn INT(PC_7);  //pin PC_7 connects to the interrupt output pin of the MAX30102
-                 
+BufferedSerial serial_port(PA_9, PA_10); 
+ 
                  
                  
 uint32_t aun_ir_buffer[500]; //IR LED sensor data
@@ -42,10 +46,29 @@ int8_t  ch_hr_valid;    //indicator to show if the heart rate calculation is val
 uint8_t uch_dummy;
 
 
+void checkSerial(){
+   
 
+    char msg[] = "asd\n";
+    char buff;
+    serial_port.write(msg, sizeof(msg));
+
+}
 
 int main()
 {
+     
+
+    serial_port.set_baud(9600);
+    serial_port.set_format(
+        /* bits */ 8,
+        /* parity */ BufferedSerial::None,
+        /* stop bit */ 1
+    );
+  
+
+    
+
     uint32_t un_min, un_max, un_prev_data;  //variables to calculate the on-board LED brightness that reflects the heartbeats
     int i;
     int32_t n_brightness;
@@ -53,7 +76,10 @@ int main()
 
     //Check the sd card//
     int err = fs.mount(bd);
-    printf("%s\r\n", (err ? "SD card Fail :(" : "SD card OK"));  
+
+    printf("%s\r\n", (err ? "SD card Fail :(" : "SD card OK"));
+  
+   
     if(err)
     {
         return 0;
@@ -120,19 +146,15 @@ int main()
     // Initialise the digital pin LED1 as an output
     DigitalOut led(LED1);
 
-    
+
 
     while (true) {
-
-        
-
+       checkSerial();
         //HEART BEAT//
         i=0;
         un_min=0x3FFFF;
         un_max=0;
         //HEART BEAT//
-
-       
 
 
         error = dht.readData();
