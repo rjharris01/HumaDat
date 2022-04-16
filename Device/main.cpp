@@ -11,6 +11,7 @@
 #include "BlockDevice.h"
 #include "FATFileSystem.h"
 #include <cstdio>
+#include <ctime>
 #include <string>
 
 
@@ -39,6 +40,7 @@ DigitalOut led(LED1);
 
 
 InterruptIn button(PC_13);
+
 
 
 bool enableDataCap = false;
@@ -104,6 +106,30 @@ void updateBLE(int HR,int RL,int IR, int SP02,int VALIDHR,int VALIDSP02, int X, 
 
 }
 
+void setTime(){
+    struct tm t;
+   
+
+    printf("Enter current date and time:\n");
+    printf("YYYY MM DD HH MM SS[enter]\n");    
+    scanf("%d %d %d %d %d %d", &t.tm_year, &t.tm_mon, &t.tm_mday
+                             , &t.tm_hour, &t.tm_min, &t.tm_sec);
+
+    // adjust for tm structure required values
+    t.tm_year = t.tm_year - 1900;
+    t.tm_mon = t.tm_mon - 1;
+    
+    // set the time
+    set_time(mktime(&t));
+
+
+   
+    printf("time set\n");
+
+
+
+ 
+}
 
 
 void setup(){
@@ -258,11 +284,40 @@ void sdFile()
             error("error: %s (%d)\n", strerror(-err), err);
         }
     }
+
+    FILE *f = fopen("/sd/data.hum", "r+");
+
+    printf("%s\n", (!f ? "Fail :(" : "OK"));
+    if (!f) {
+        // Create the data file if it doesn't exist
+        printf("No file found, creating a new file... ");
+        fflush(stdout);
+        f = fopen("/sd/data.hum", "w+");
+        printf("%s\n", (!f ? "Fail :(" : "OK"));
+        if (!f) {
+            error("error: %s (%d)\n", strerror(errno), -errno);   
+        }
+    }
+
+    err = fclose(f);
+
+    printf("%s\n", (err < 0 ? "Fail :(" : "OK"));
+    if (err < 0) {
+        error("error: %s (%d)\n", strerror(errno), -errno);
+    }
+
+    else{
+        printf("SD READY\n");
+    }
 }
 
 
 void writeToSD(){
     fflush(stdout);
+    char timeStampBuffer[32];
+    time_t seconds = time(NULL);
+    strftime(timeStampBuffer, 32, "%FT%H:%M:%S%z", localtime(&seconds));
+    
     FILE *f = fopen("/sd/data.hum", "r+");
 
     printf("%s\n", (!f ? "Fail :(" : "OK"));
@@ -286,19 +341,19 @@ void writeToSD(){
     }
 
     if (ch_hr_valid == 1 && ch_spo2_valid == 1){
-        err = fprintf(f,"%s,time,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,HR,n_sp02,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
+        err = fprintf(f,"%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,timeStampBuffer,HR,n_sp02,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
     }
 
     else if (ch_hr_valid == 0 && ch_spo2_valid == 1){
-        err = fprintf(f,"%s,time,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,0,n_sp02,aun_ir_buffer[i],aun_red_buffer[i],2,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
+        err = fprintf(f,"%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,timeStampBuffer,0,n_sp02,aun_ir_buffer[i],aun_red_buffer[i],2,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
     }
 
     else  if (ch_hr_valid == 1 && ch_spo2_valid == 0){
-        err = fprintf(f,"%s,time,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,HR,0,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
+        err = fprintf(f,"%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,timeStampBuffer,HR,0,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
     }
     
     else  if (ch_hr_valid == 0 && ch_spo2_valid == 0){
-         err = fprintf(f,"%s,time,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,0,0,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
+         err = fprintf(f,"%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,timeStampBuffer,0,0,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
     }
 
 
@@ -333,14 +388,11 @@ int main()
 
     sdFile();
 
+    setTime();
+
     
-
-    //Ticker logger;
-
-    //logger.attach(&blink,1000ms);
     button.rise(queue.event(dataCap));
  
-
     while (true) {
 
         getSensorReadings();
@@ -365,4 +417,5 @@ int main()
         //    printf("Error: with Enviromental sensor %d\n", errorEnviromentals)
         //   }
     }
+   
 }
