@@ -150,10 +150,10 @@ main {
   }
 }
 
-.dropzoneReject {
+.dropzone.dropzoneReject {
   border: 2px dashed red;
 }
-.dropzoneAccept {
+.dropzone.dropzoneAccept {
   border: 2px dashed green;
 }
 .dropzone {
