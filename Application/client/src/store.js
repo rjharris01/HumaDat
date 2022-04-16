@@ -14,8 +14,10 @@ import {
     dataInfoReducer,
     dataHumaDataReducer
   } from './reducers/dataReducers'
+import { uploadReducer } from './reducers/uploadReducer'
 
 const reducer = combineReducers({  
+  uploadReducer: uploadReducer,
   dataHumaData: dataHumaDataReducer,
   dataInfo: dataInfoReducer,
   userLogin: userLoginReducer,

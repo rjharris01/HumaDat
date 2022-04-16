@@ -3,19 +3,23 @@ import Papa from "papaparse";
 import Sidebar from "../components/sidebar/sidebar";
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux'
-import Dropzone, {useDropzone} from 'react-dropzone';
+import {useDropzone} from 'react-dropzone';
 import { Container } from 'react-bootstrap';
-import {upload} from '../actions/uploadActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { Card } from 'react-bootstrap';
+import { upload } from '../actions/uploadActions';
 
 
 const  FileUploadScreen = () => {
 
     const dispatch = useDispatch()
+
     const userLogin = useSelector(state => state.userLogin)
-    const {loading, error, userInfo} = userLogin
+    const {error, userInfo} = userLogin
+
+    const uploadState = useSelector(state => state.uploadReducer)
+    const {loading : uploadLoading, error : uploadError, uploadSuccess} = uploadState
     
     const history = useNavigate()
     useEffect(()=> {
@@ -38,18 +42,20 @@ const  FileUploadScreen = () => {
               }}
             )
           }
-      }, [])
+      }, [dispatch,userInfo])
 
-      const {getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject,} = useDropzone({onDrop, accept: '.hum',})
+      const {getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject,} = useDropzone({onDrop, accept: '.hum,'})
       
 
   return (
     <>
     <Sidebar/>
-    {error && <Message variant='danger'>{error}</Message>}
+    
     
     <Container>
-
+    {error && <Message variant='danger'>{error}</Message>}
+    {uploadError && <Message variant='danger'>{uploadError}</Message>}
+    {uploadSuccess && <Message variant='primary'>File Upload Success</Message>}
     <Card
          bg={"white"}
          text={'dark'}
@@ -58,22 +64,27 @@ const  FileUploadScreen = () => {
         >
         <Card.Header>File Upload</Card.Header>
         <Card.Body>
+          {uploadLoading ? (uploadLoading && <Loader/>) :
+          <>
           <Card.Title>How to Use</Card.Title>
           <Card.Text>Simply drag, drop or select .hum files to upload them to database</Card.Text>
-          <div
-        {...getRootProps({
-          className: `dropzone 
-          ${isDragAccept && 'dropzoneAccept'} 
-          ${isDragReject && 'dropzoneReject'}`,
-        })}
-      >
-      <input {...getInputProps()} />
-      {
-        isDragActive ?
-          <Card.Text>Drop the file here ...</Card.Text> :
+              <div
+            {...getRootProps({
+              className: `dropzone 
+              ${isDragAccept && 'dropzoneAccept'} 
+              ${isDragReject && 'dropzoneReject'}`,
+            })}
+          >
+          <input {...getInputProps()} />
+          {
+          isDragActive ? (isDragAccept ? (<Card.Text>Drop the file here ...</Card.Text>):
+          <Card.Text>Incorrect File Type, Please Ensure file is .hum</Card.Text>) :
+
+
           <Card.Text>Drag 'n' drop some file here, or click to select file</Card.Text>
-      }
-    </div>
+          }
+        </div>
+        </>}
         </Card.Body>
         <Card.Footer className="text-muted"/>
       </Card>
