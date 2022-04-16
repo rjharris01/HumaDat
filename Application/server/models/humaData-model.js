@@ -6,6 +6,7 @@ const HumaData = new Schema(
         device_id: { type: String, required: true },
         time: { type: Date, required: true },
         hrValue: { type: Number, required: true },
+        sp02Value : { type: Number, required: true },
         irValue: { type: Number, required: true },
         redlightValue: { type: Number, required: true },
         validValue: { type: Number, required: true },

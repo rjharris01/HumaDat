@@ -6,7 +6,7 @@ import Chart from '../components/chart/chart';
 import { useSelector} from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/sidebar/sidebar"
-import { Button, Card, Container } from 'react-bootstrap';
+import { Card, Container } from 'react-bootstrap';
 
 
 const BleScreen = (props) => {
@@ -39,7 +39,7 @@ const BleScreen = (props) => {
   const validService = "b07f7d8e-95ae-11ec-b909-0242ac120002"
   const hrValidCharacteristicID = "4294a0da-91ab-11ec-b909-0242ac120002"
 
-  const dataLimit = 10;
+  const dataLimit = 30;
 
   const [Humadata, setHumaData] =  useState({
     labels  : [],
@@ -48,63 +48,63 @@ const BleScreen = (props) => {
       data: [],
       fill: false,
       borderColor: 'rgb(75, 192, 192)',
-      tension: 0.1
+      tension: 0
     },
     {
       label: 'Humidity',
       data: [],
       fill: false,
       borderColor: 'rgb(75, 98, 192)',
-      tension: 0.1
+      tension: 0
     },
     {
       label: 'Accelerometer X',
       data: [],
       fill: false,
       borderColor: 'rgb(75, 192, 89)',
-      tension: 0.1
+      tension: 0
     },
     {
       label: 'Accelerometer Y',
       data: [],
       fill: false,
       borderColor: 'rgb(196, 118, 22)',
-      tension: 0.1
+      tension: 0
     },
     {
       label: 'Accelerometer Z',
       data: [],
       fill: false,
       borderColor: 'rgb(196, 63, 22)',
-      tension: 0.1
+      tension: 0
     },
     {
       label: 'BPM (PPG)',
       data: [],
       fill: false,
       borderColor: 'rgb(196, 25, 22)',
-      tension: 0.1
+      tension: 0
     },
     {
       label: 'Red Light (PPG)',
       data: [],
       fill: false,
       borderColor: 'rgb(184, 61, 182)',
-      tension: 0.1
+      tension: 0
     },
     {
       label: 'Infared Light (PPG)',
       data: [],
       fill: false,
       borderColor: 'rgb(86, 42, 173)',
-      tension: 0.1
+      tension: 0
     },
     {
       label: 'Sp02 (PPG)',
       data: [],
       fill: false,
       borderColor: 'rgb(22, 44, 184)',
-      tension: 0.1
+      tension: 0
     }]
   });
   
@@ -117,7 +117,7 @@ const BleScreen = (props) => {
     else if (navigator.bluetooth) {
       setSupportsBluetooth(true);
     }
-  }, []);
+  }, [history,userInfo]);
 
 
   const deviceDisconnect= () =>{
@@ -192,7 +192,7 @@ const BleScreen = (props) => {
     const tempData = tempDataset[pointer].data.slice(-dataLimit);
     
      
-    tempData.push(event.target.value.getUint8(0));
+    tempData.push(event.target.value.getInt32(0,true));
 
     if (pointer === 1)
     {
@@ -304,71 +304,74 @@ const BleScreen = (props) => {
       const readingIR = await hrIRCharacteristic.readValue();
       const readingSp02 = await hrSpo2Characteristic.readValue();
 
+
+      console.log(readingRed);
+     
       // Show the initial reading on the web page
       setHumaData({
         labels  : [new Date().toLocaleString()],
         datasets: [{
           label: 'Temperature (°C)',
-          data: [readingTemp.getUint8(0)],
+          data: [readingTemp.getInt16(0,true)],
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
+          tension: 0
         },
         {
           label: 'Humidity (%)',
-          data: [readingHum.getUint8(0)],
+          data: [readingHum.getInt16(0,true)],
           fill: false,
           borderColor: 'rgb(75, 98, 192)',
-          tension: 0.1
+          tension: 0
         },
         {
           label: 'Accelerometer X',
-          data: [readingX.getUint8(0)],
+          data: [readingX.getInt16(0,true)],
           fill: false,
           borderColor: 'rgb(75, 192, 89)',
-          tension: 0.1
+          tension: 0
         },
         {
           label: 'Accelerometer Y',
-          data: [readingY.getUint8(0)],
+          data: [readingY.getInt16(0,true)],
           fill: false,
           borderColor: 'rgb(196, 118, 22)',
-          tension: 0.1
+          tension: 0
         },
         {
           label: 'Accelerometer Z',
-          data: [readingZ.getUint8(0)],
+          data: [readingZ.getInt16(0,true)],
           fill: false,
           borderColor: 'rgb(196, 63, 22)',
-          tension: 0.1
+          tension: 0
         },
         {
           label: 'BPM (PPG)',
-          data: [readingBPM.getUint8(0)],
+          data: [readingBPM.getInt16(0,true)],
           fill: false,
           borderColor: 'rgb(196, 25, 22)',
-          tension: 0.1
+          tension: 0
         },
         {
           label: 'Red Light (PPG)',
-          data: [readingRed.getUint8(0)],
+          data: [readingRed.getInt32(0,true)],
           fill: false,
           borderColor: 'rgb(184, 61, 182)',
-          tension: 0.1
+          tension: 0
         },
         {
           label: 'Infared Light (PPG)',
-          data: [readingIR.getUint8(0)],
+          data: [readingIR.getInt16(0,true)],
           fill: false,
           borderColor: 'rgb(86, 42, 173)',
-          tension: 0.1
+          tension: 0
         },
         {
           label: 'Sp02 (PPG)',
-          data: [readingSp02.getUint8(0)],
+          data: [readingSp02.getInt16(0,true)],
           fill: false,
           borderColor: 'rgb(22, 44, 184)',
-          tension: 0.1
+          tension: 0
         }]
       });
 
