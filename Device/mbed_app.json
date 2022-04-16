@@ -1,6 +1,7 @@
 {
     "target_overrides": {
         "*": {
+            "platform.callback-nontrivial"      : true,
             "platform.stdio-baud-rate": 9600,
             "platform.stdio-buffered-serial": 1,
             "target.features_add": ["STORAGE"],
@@ -10,6 +11,7 @@
             "sd.SPI_CLK": "PB_13",
             "sd.SPI_CS": "PB_12",
             "sd.INIT_FREQUENCY": 400000
+            
             }
         }
 }

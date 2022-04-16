@@ -10,14 +10,12 @@
 #include "MAX30102.h"
 #include "BlockDevice.h"
 #include "FATFileSystem.h"
+#include <cstdio>
+#include <string>
 
 
 
-
-
-
-
-// Blinking rate in milliseconds
+// Polling rate in milliseconds
 #define POLLING_RATE     1s
 #define DHTTYPE DHT11
 
@@ -26,6 +24,10 @@
 #define BUFFER_MAX_LEN 10 
 #define FORCE_REFORMAT = true;
 
+EventQueue queue(32 * EVENTS_EVENT_SIZE);
+Thread t;
+
+
 BlockDevice *bd = BlockDevice::get_default_instance();
 FATFileSystem fs("sd");
 
@@ -33,8 +35,13 @@ DHT dht(PA_1,DHTTYPE);
 ADXL345 accelerometer(PA_7, PA_6,PB_3,PB_6); //PinName mosi, PinName miso, PinName sck, PinName cs
 DigitalIn INT(PC_7);  //pin PC_7 connects to the interrupt output pin of the MAX30102
 BufferedSerial serial_port(PA_9, PA_10); 
-DigitalOut led(LED1);
-                 
+DigitalOut led(LED1); 
+
+
+InterruptIn button(PC_13);
+
+
+bool enableDataCap = false;
                  
 uint32_t aun_ir_buffer[500]; //IR LED sensor data
 int32_t n_ir_buffer_length;    //data length
@@ -44,7 +51,12 @@ int8_t ch_spo2_valid;   //indicator to show if the SP02 calculation is valid
 int32_t n_heart_rate;   //heart rate value
 int8_t  ch_hr_valid;    //indicator to show if the heart rate calculation is valid
 uint8_t uch_dummy;
+
+//accelerometer data
 int accReadings[3] = {0, 0, 0};
+
+//sd
+int err;
 
 
 //HEART BEAT//
@@ -58,7 +70,9 @@ uint16_t  temperature;
 uint16_t  humidity;
 uint16_t  errorEnviromentals = 0;
 
-void checkSerial(int HR,int RL,int IR, int SP02,int VALIDHR,int VALIDSP02, int X, int Y, int Z,int HUM, int TEMP){
+char deviceName[] = "HumaDat1";
+
+void updateBLE(int HR,int RL,int IR, int SP02,int VALIDHR,int VALIDSP02, int X, int Y, int Z,int HUM, int TEMP){
     
     if (HR > 220){
         HR =0;
@@ -72,17 +86,17 @@ void checkSerial(int HR,int RL,int IR, int SP02,int VALIDHR,int VALIDSP02, int X
     }
 
     else if(VALIDHR > 0 && VALIDSP02 == 0 ) {
-        snprintf(msg,64,"<%d,%d,%d,%d,%d,%d,%d,%d,%d,%d>",HR,RL,IR,0,1,X,Y,Z,HUM,TEMP);
+        snprintf(msg,64,"<%d,%d,%d,%d,%d,%d,%d,%d,%d,%d>",HR,RL,IR,0,2,X,Y,Z,HUM,TEMP);
         serial_port.write(msg, sizeof(msg));
     }
 
     else if(VALIDSP02 > 0 && VALIDHR == 0 ) {
-        snprintf(msg,64,"<%d,%d,%d,%d,%d,%d,%d,%d,%d,%d>",0,RL,IR,SP02,2,X,Y,Z,HUM,TEMP);
+        snprintf(msg,64,"<%d,%d,%d,%d,%d,%d,%d,%d,%d,%d>",0,RL,IR,SP02,3,X,Y,Z,HUM,TEMP);
         serial_port.write(msg, sizeof(msg));
     }
 
     else {
-        snprintf(msg,64,"<%d,%d,%d,%d,%d,%d,%d,%d,%d,%d>",0,RL,IR,0,3,X,Y,Z,HUM,TEMP);
+        snprintf(msg,64,"<%d,%d,%d,%d,%d,%d,%d,%d,%d,%d>",0,RL,IR,0,4,X,Y,Z,HUM,TEMP);
         serial_port.write(msg, sizeof(msg));
     }
 
@@ -100,10 +114,7 @@ void setup(){
         /* parity */ BufferedSerial::None,
         /* stop bit */ 1
     );
-
-    //Check the sd card//
-    int err = fs.mount(bd);
-    printf("%s\r\n", (err ? "SD card Fail :(" : "SD card OK"));
+  
 
 
     //Accelerometer
@@ -187,7 +198,7 @@ void calcPPG(){
                     
                 }
                 maxim_heart_rate_and_oxygen_saturation(aun_ir_buffer, n_ir_buffer_length, aun_red_buffer, &n_sp02, &ch_spo2_valid, &n_heart_rate, &ch_hr_valid);
-                led.write(!led);
+                
 }
 
 void printDataSerial(){
@@ -196,32 +207,162 @@ void printDataSerial(){
             printf(", HR=%i, ", n_heart_rate); 
             printf("HRvalid=%i, ", ch_hr_valid);
             printf("SpO2=%i, ", n_sp02);
-            printf("SPO2Valid=%i", ch_spo2_valid);
-            printf("%d",temperature);
-            printf("%d %% ",humidity);
+            printf("SPO2Valid=%i ", ch_spo2_valid);
+            printf("Temp = %d ",temperature);
+            printf("Hum %d %% ",humidity);
             printf("x=%i, y=%i, z=%i \n", (int16_t)accReadings[0], (int16_t)accReadings[1], (int16_t)accReadings[2]);  
 }
 
-int main()
-{
-    setup();
-    
-    //HEART BEAT//
-    // Initialise the digital pin LED1 as an output
-    while (true) {
-        errorEnviromentals = dht.readData();
+void getSensorReadings(){
         calcPPG();
+        errorEnviromentals = dht.readData();
         accelerometer.getOutput(accReadings);
         temperature = dht.ReadTemperature(CELCIUS);
         humidity = dht.ReadHumidity();
+
+        
+
+}
+
+void dataCap(void)
+{   
+    
+    if (!enableDataCap){
+         enableDataCap = true;
+         err = fs.mount(bd);
+    }
+
+    else if (enableDataCap){
+        err = fs.unmount();
+        enableDataCap = false;
+        
+
+    }
+}
+
+void sdFile()
+{
+
+    // Try to mount the filesystem
+    printf("Mounting the filesystem... ");
+    fflush(stdout);
+    err = fs.mount(bd);
+    printf("%s\n", (err ? "Fail :(" : "OK"));
+    if (err) {
+        // Reformat if we can't mount the filesystem
+        printf("formatting... ");
+        fflush(stdout);
+        err = fs.reformat(bd);
+        printf("%s\n", (err ? "Fail :(" : "OK"));
+        if (err) {
+            error("error: %s (%d)\n", strerror(-err), err);
+        }
+    }
+}
+
+
+void writeToSD(){
+    fflush(stdout);
+    FILE *f = fopen("/sd/data.hum", "r+");
+
+    printf("%s\n", (!f ? "Fail :(" : "OK"));
+    if (!f) {
+        // Create the data file if it doesn't exist
+        printf("No file found, creating a new file... ");
+        fflush(stdout);
+        f = fopen("/sd/data.hum", "w+");
+        printf("%s\n", (!f ? "Fail :(" : "OK"));
+        if (!f) {
+            error("error: %s (%d)\n", strerror(errno), -errno);   
+        }
+    }
+    
+    fseek(f, 0,SEEK_END);
+    fflush(stdout);
+
+    int HR = n_heart_rate;
+    if (HR > 220){
+        HR =0;
+    }
+
+    if (ch_hr_valid == 1 && ch_spo2_valid == 1){
+        err = fprintf(f,"%s,time,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,HR,n_sp02,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
+    }
+
+    else if (ch_hr_valid == 0 && ch_spo2_valid == 1){
+        err = fprintf(f,"%s,time,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,0,n_sp02,aun_ir_buffer[i],aun_red_buffer[i],2,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
+    }
+
+    else  if (ch_hr_valid == 1 && ch_spo2_valid == 0){
+        err = fprintf(f,"%s,time,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,HR,0,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
+    }
+    
+    else  if (ch_hr_valid == 0 && ch_spo2_valid == 0){
+         err = fprintf(f,"%s,time,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",deviceName,0,0,aun_ir_buffer[i],aun_red_buffer[i],1,temperature,humidity,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2]);
+    }
+
+
+
+    if (err < 0) {
+        printf("Fail :(\n");
+        error("error: %s (%d)\n", strerror(errno), -errno);
+    }
+
+    else{  // Close the file which also flushes any cached writes
+        printf("Closing \"/sd/data.hum\"... ");
+        fflush(stdout);
+        err = fclose(f);
+
+        printf("%s\n", (err < 0 ? "Fail :(" : "OK"));
+        if (err < 0) {
+            error("error: %s (%d)\n", strerror(errno), -errno);
+        }
+    }
+}
+
+
+
+
+int main()
+{
+
+    t.start(callback(&queue, &EventQueue::dispatch_forever));
+  
+
+    setup();
+
+    sdFile();
+
+    
+
+    //Ticker logger;
+
+    //logger.attach(&blink,1000ms);
+    button.rise(queue.event(dataCap));
+ 
+
+    while (true) {
+
+        getSensorReadings();
+        printDataSerial();   
+        updateBLE(n_heart_rate,aun_red_buffer[i],aun_ir_buffer[i],n_sp02,ch_hr_valid,ch_spo2_valid,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2],humidity,temperature);
+        
+
+        led.write(enableDataCap);
+
+
+        if(enableDataCap)
+        {
+            writeToSD();
+        }
+        
+        //
+       
         // if (0 == errorEnviromentals){
-        printDataSerial();     
-        //send samples and calculation result to terminal program through UART    
-        checkSerial(n_heart_rate,aun_red_buffer[i],aun_ir_buffer[i],n_sp02,ch_hr_valid,ch_spo2_valid,(int16_t)accReadings[0],(int16_t)accReadings[1],(int16_t)accReadings[2],humidity,temperature);
-            
+        
+        //send samples and calculation result to terminal program through UART      
         //  else {
         //    printf("Error: with Enviromental sensor %d\n", errorEnviromentals)
         //   }
-          ThisThread::sleep_for(POLLING_RATE);
     }
 }
