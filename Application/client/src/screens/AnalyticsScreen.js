@@ -128,10 +128,11 @@ const  AnalyticsScreen = () => {
 
       const [PPGdata, setPPGdata] =  useState({
         labels  : [],
-        datasets: [{data:[],
-        label: 'IR', borderColor: 'rgb(86, 42, 173)'}, {data:[],
-            label: 'Red',borderColor: 'rgb(184, 61, 182)'}]
-      });
+        datasets:
+        [
+        {data:[],label: 'IR', borderColor: 'rgb(86, 42, 173)'}, 
+        {data:[],label: 'Red',borderColor: 'rgb(184, 61, 182)'}, 
+        ] });
    
       
     
