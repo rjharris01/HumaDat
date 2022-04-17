@@ -62,11 +62,11 @@ const addData = asyncHandler( async (req,res) => {
 })
 
 
-// @desc   Fetch all data 
+// @desc   Fetch data between dates based on device id
 // @route  GET /api/data/:dateFrom/:dateTo/:device_id
 // @access Public
 const getDataByDate = asyncHandler( async (req,res) => {  
-
+    try {
     const data = await HumaData.find({
         time: {
             $gte: new Date(req.params.dateFrom),
@@ -74,10 +74,31 @@ const getDataByDate = asyncHandler( async (req,res) => {
         },
         device_id: new String( req.params.device_id) 
     })
-
     res.json(data)
-
-    
+    }catch{
+        res.status(400)
+        throw new Error('Error occured while fetching data')
+    }
 })
 
-export {getHumadata, addData,getDataByDate,getInfo}
+// @desc   Fetch data between dates based on device id
+// @route  DELETE /api/data/:dateFrom/:dateTo/:device_id
+// @access Public
+const deleteDataByDate = asyncHandler( async (req,res) => {  
+    try {
+    const data = await HumaData.deleteMany({
+        time: {
+            $gte: new Date(req.params.dateFrom),
+             $lt: new Date(req.params.dateTo)
+        },
+        device_id: new String( req.params.device_id) 
+    })
+    res.status(201).json({})
+    }catch{
+    res.status(400)
+    console.log(req.body.uploadData);
+    throw new Error('Error occured while deleting data')
+}
+})
+
+export {getHumadata,addData,getDataByDate,getInfo,deleteDataByDate}
