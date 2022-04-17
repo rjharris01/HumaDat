@@ -347,6 +347,18 @@ const  AnalyticsScreen = () => {
             else{
                 dispatch(getInfo(userInfo._id))
             }
+
+            if(dataStart && dataEnd)
+            {
+                var temp = new Date(dataEnd)
+                temp.setSeconds(temp.getSeconds() + 1)
+                setdateEnd(temp)
+
+                temp = new Date(dataStart)
+                setdateStart(temp)
+                
+            }
+         
             
         }
        
@@ -362,6 +374,7 @@ const  AnalyticsScreen = () => {
 
     const submitHandler = (e) => {
           e.preventDefault()
+          console.log(dateStart.toISOString(),dateEnd.toISOString())
           dispatch(getById(dateStart.toISOString(),dateEnd.toISOString(),device_id.value))
           
     }
@@ -462,12 +475,14 @@ const  AnalyticsScreen = () => {
 
                     <Form.Group controlId='dateStart'>
                         <Form.Label>Start of data: </Form.Label>
-                            <DateTimePicker onChange={setdateStart} value={dateStart} />
+                            <DateTimePicker onChange={setdateStart} locale="" value={dateStart} />
+                            
                     </Form.Group>
 
                     <Form.Group controlId='dateEnd'>
                         <Form.Label>End of data:</Form.Label>
-                            <DateTimePicker onChange={setdateEnd} value={dateEnd} />
+                            <DateTimePicker  onChange={setdateEnd} value={dateEnd}   />
+                            
                     </Form.Group>
                     
                     <Button type='submit' variant='primary m-3'>
