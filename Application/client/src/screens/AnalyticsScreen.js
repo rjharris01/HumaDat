@@ -6,7 +6,7 @@ import {Table,Button,Row,Col, Container, Form,Card} from 'react-bootstrap'
 import LineChart from '../components/chart/analyticsCharts';
 import DateTimePicker from 'react-datetime-picker';
 import Select from 'react-select';
-import {getById,getInfo} from '../actions/dataActions'
+import {deleteById,getById,getInfo} from '../actions/dataActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import CsvPasser from '../components/CsvPasser';
@@ -27,6 +27,9 @@ const  AnalyticsScreen = () => {
     const dataHumaData = useSelector((state) => state.dataHumaData)   
     const {loading:dataLoading, error:dataError, data:humaData} = dataHumaData
 
+    const deleteDataState = useSelector((state) => state.dataHumaDataDelete)
+    const {loading:dataDeleteLoading, error:dataDeleteError,success:dataDeleteSuccess} = deleteDataState
+
 
     const dataInfo = useSelector((state) => state.dataInfo)   
     const {loading, error, devices, dataLen, dataStart,dataEnd} = dataInfo
@@ -34,6 +37,14 @@ const  AnalyticsScreen = () => {
 
     const userLogin = useSelector((state) => state.userLogin)
     const {userInfo} = userLogin
+
+    const deleteData = () =>{
+        dispatch(deleteById(dateStart.toISOString(),dateEnd.toISOString(),device_id.value))
+        setDevicesLabels([{ label:'' , value: '' }])
+        setStats(null)
+        dispatch(getInfo(userInfo._id))
+        
+    }
 
     const median = arr => {
         const { length } = arr;
@@ -83,12 +94,6 @@ const  AnalyticsScreen = () => {
         return arr.indexOf(val);
       };
    
-   // const [xyzdata, setxyzdata] =  useState({
-    //    labels  : [0,1,2,3,5,0,1,2,3,5],
-    //    datasets: [{data:[0,1,2,3,5,0,1,2,3,5], label: 'x',borderColor: 'rgb(75, 192, 89)'},
-    //    {data:[2,4,6,7,9,4,2,4,6,4],label: 'y',borderColor: 'rgb(196, 118, 22)'},
-    //    {data:[0,6,2,9,4,2,8,6,2,3], label: 'z',borderColor: 'rgb(196, 63, 22)'}]
-    //  });
 
     const [xyzdata, setxyzData] =  useState({
         labels  : [],
@@ -148,15 +153,7 @@ const  AnalyticsScreen = () => {
             if(humaData){
                 
                 let tempDataset = xyzdata.datasets.slice(0)
-
-                
-               
-                
-             
-                
-    
                 const time = humaData.map(a => a.time);
-    
                 const xData = humaData.map(a => a.xValue);
                 const yData = humaData.map(a => a.yValue);
                 const zData = humaData.map(a => a.zValue);
@@ -168,18 +165,7 @@ const  AnalyticsScreen = () => {
                 const ppgRedData = humaData.map(a => a.redlightValue);
     
                 const hrData = humaData.map(a => a.hrValue);
-             
-               
 
-
-
-
-
-
-
-
-
-                
                 tempDataset[0].data = xData
                 
                 tempDataset[1].data = yData
@@ -243,7 +229,7 @@ const  AnalyticsScreen = () => {
                    
    
                    
-                   var tempStat = {}
+                   tempStat = {}
                     sum = yData.reduce((a, b) => a + b, 0);
                     mean =  Math.round(((sum / yData.length) + Number.EPSILON) * 100) / 100 || 0;
                     med = median(yData)
@@ -262,7 +248,7 @@ const  AnalyticsScreen = () => {
    
                  
    
-                   var tempStat = {}
+                   tempStat = {}
                    sum = zData.reduce((a, b) => a + b, 0);
                    mean =  Math.round(((sum / zData.length) + Number.EPSILON) * 100) / 100 || 0;
                    med = median(zData)
@@ -276,7 +262,7 @@ const  AnalyticsScreen = () => {
                    tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
                    tempStats.push(tempStat)
 
-                   var tempStat = {}
+                   tempStat = {}
                    sum = temperatureData.reduce((a, b) => a + b, 0);
                    mean =  Math.round(((sum / temperatureData.length) + Number.EPSILON) * 100) / 100 || 0;
                    med = median(temperatureData)
@@ -290,7 +276,7 @@ const  AnalyticsScreen = () => {
                    tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
                    tempStats.push(tempStat)
 
-                   var tempStat = {}
+                   tempStat = {}
                    sum = humidityData.reduce((a, b) => a + b, 0);
                    mean =  Math.round(((sum / humidityData.length) + Number.EPSILON) * 100) / 100 || 0;
                    med = median(humidityData)
@@ -304,7 +290,7 @@ const  AnalyticsScreen = () => {
                    tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
                    tempStats.push(tempStat)
 
-                   var tempStat = {}
+                   tempStat = {}
                    sum = hrData.reduce((a, b) => a + b, 0);
                    mean =  Math.round(((sum / hrData.length) + Number.EPSILON) * 100) / 100 || 0;
                    med = median(hrData)
@@ -318,7 +304,7 @@ const  AnalyticsScreen = () => {
                    tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
                    tempStats.push(tempStat)
 
-                   var tempStat = {}
+                   tempStat = {}
                    sum = ppgRedData.reduce((a, b) => a + b, 0);
                    mean =  Math.round(((sum / ppgRedData.length) + Number.EPSILON) * 100) / 100 || 0;
                    med = median(ppgRedData)
@@ -332,7 +318,7 @@ const  AnalyticsScreen = () => {
                    tempStat = {variable,mean,med,mod,rang,minimum,maximum,minTime,maxTime}
                    tempStats.push(tempStat)
 
-                   var tempStat = {}
+                   tempStat = {}
                    sum = ppgIRData.reduce((a, b) => a + b, 0);
                    mean =  Math.round(((sum / ppgIRData.length) + Number.EPSILON) * 100) / 100 || 0;
                    med = median(ppgIRData)
@@ -366,7 +352,7 @@ const  AnalyticsScreen = () => {
        
         
        
-    },[dispatch,devices,humaData])
+    },[dispatch,history,devices,humaData])
 
 
 
@@ -374,7 +360,7 @@ const  AnalyticsScreen = () => {
       
 
 
-      const submitHandler = (e) => {
+    const submitHandler = (e) => {
           e.preventDefault()
           dispatch(getById(dateStart.toISOString(),dateEnd.toISOString(),device_id.value))
           
@@ -404,7 +390,7 @@ const  AnalyticsScreen = () => {
             <Col >
             
             {dataError && <Message variant='danger'>{dataError}</Message>}
-            {humaData? ( dataLoading ? (dataLoading && <Loader/>) :
+            {humaData? ( dataLoading ? (dataLoading && <Loader/>) : 
             <Col>
                 <LineChart xyz={xyzdata} TandHdata={TandHdata} HRdata = {HRdata} PPGdata = {PPGdata}/>
             </Col>):
@@ -413,9 +399,9 @@ const  AnalyticsScreen = () => {
                 <Message variant='info'>No data to display</Message>
             </Col>}
             <Row>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
+                <Table striped bordered hover >
+                    <thead key="table">
+                        <tr key="tableHeaders">
                         <th>Variable</th>
                         <th>Minimum</th>
                         <th>Minimum Time</th>
@@ -428,10 +414,10 @@ const  AnalyticsScreen = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {stats? stats.map(stat=> 
+                    {humaData? (stats? stats.map((stat,index)=> 
                         
                         
-                        <tr>
+                        <tr key={index}>
                             <td key={stat.variable.key}>{stat.variable}</td>
                             <td key={stat.minimum.key}>{stat.minimum}</td>
                             <td key={stat.minTime.key}>{stat.minTime}</td>
@@ -443,7 +429,7 @@ const  AnalyticsScreen = () => {
                             <td key={stat.rang.key}>{stat.rang}</td>
                         </tr>
                        
-                       ): null}
+                    ):null): null}
                     </tbody>
                 </Table>
             </Row>
@@ -451,8 +437,10 @@ const  AnalyticsScreen = () => {
         
             <Col>
             {error && <Message variant='danger'>{error}</Message>}
+            {dataDeleteError && <Message variant='danger'>{error}</Message>}
+            {dataDeleteSuccess && <Message variant='success'>Delete Data Success</Message>}
             {loading ? (loading && <Loader/>) :
-            
+            dataDeleteLoading ? (dataDeleteLoading && <Loader/>):
         
 
                 <Form onSubmit={submitHandler} >
@@ -489,7 +477,10 @@ const  AnalyticsScreen = () => {
                 }
                {humaData? (
                    stats? (
+                    <>
                     <CsvPasser csvData = {humaData} stats = {stats} variant='primary m-3'/>
+                    <Button variant="danger m-3" onClick={deleteData}>Delete Data</Button>
+                    </>
                    ):null
                
                ):null}
