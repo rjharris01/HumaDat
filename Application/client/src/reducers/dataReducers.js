@@ -1,5 +1,5 @@
 
-import {DATA_GET_DATA_ID_REQUEST,DATA_GET_DATA_ID_SUCCESS,DATA_GET_DATA_ID_FAIL,DATA_GET_DATA_REQUEST,DATA_GET_DATA_SUCCESS,DATA_GET_DATA_FAIL,DATA_GET_INFO_FAIL,DATA_GET_INFO_SUCCESS,DATA_GET_INFO_REQUEST} from "../constants/uploadConstants"
+import {DATA_GET_DATA_ID_REQUEST,DATA_GET_DATA_ID_SUCCESS,DATA_GET_DATA_ID_FAIL,DATA_GET_INFO_FAIL,DATA_GET_INFO_SUCCESS,DATA_GET_INFO_REQUEST, DATA_DELETE_DATA_ID_REQUEST, DATA_DELETE_DATA_ID_SUCCESS, DATA_DELETE_DATA_ID_FAIL} from "../constants/dataConstants"
 
 export const dataInfoReducer = (state = {}, action) => {
     switch(action.type){
@@ -19,7 +19,7 @@ export const dataHumaDataReducer = (state = {}, action) => {
         case DATA_GET_DATA_ID_REQUEST:
             return { loading: true}
         case DATA_GET_DATA_ID_SUCCESS:
-            if (action.payload.length == 0 ){
+            if (action.payload.length === 0 ){
                 return {loading: false, data: null}
             }
             else{
@@ -27,7 +27,24 @@ export const dataHumaDataReducer = (state = {}, action) => {
             }
         case DATA_GET_DATA_ID_FAIL:
             return {loading: false, error: action.payload}
+        case DATA_DELETE_DATA_ID_SUCCESS:
+            return {}
         default:
             return state
     }
 }
+
+export const dataHumaDataDeleteReducer = (state = {}, action) => {
+    switch(action.type){
+        case DATA_DELETE_DATA_ID_REQUEST:
+            return { loading: true}
+        case DATA_DELETE_DATA_ID_SUCCESS:
+           return {loading: false, success: true }
+        case DATA_DELETE_DATA_ID_FAIL:
+            return {loading: false, error: action.payload}
+        default:
+            return state
+    }
+}
+
+
