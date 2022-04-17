@@ -53,15 +53,17 @@ const  FileUploadScreen = () => {
     
     
     <Container>
-    {error && <Message variant='danger'>{error}</Message>}
-    {uploadError && <Message variant='danger'>{uploadError}</Message>}
-    {uploadSuccess && <Message variant='primary'>File Upload Success</Message>}
+    
     <Card
+    
          bg={"white"}
          text={'dark'}
          style={{ width: '80vw' }}
          className="text-center"
         >
+        {error && <Message variant='danger'>{error}</Message>}
+        {uploadError && <Message variant='danger'>{uploadError}</Message>}
+        {uploadSuccess && <Message variant='primary'>File Upload Success</Message>}
         <Card.Header>File Upload</Card.Header>
         <Card.Body>
           {uploadLoading ? (uploadLoading && <Loader/>) :
