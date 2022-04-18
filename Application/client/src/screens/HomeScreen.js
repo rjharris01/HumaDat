@@ -16,7 +16,11 @@ const HomeScreen = () => {
         width: "100vw" }}>
        
         <Sidebar/>
+        <Row>
+        <Col  md={{span:4, offset:4}}>
         <h2>The HumaDat Platform</h2>
+        </Col>
+        </Row>
         <Container>
         <Slider/>
         <Row>

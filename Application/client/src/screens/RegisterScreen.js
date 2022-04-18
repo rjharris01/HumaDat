@@ -48,7 +48,8 @@ const RegisterScreen = () => {
     return (
         <div>
         <Sidebar/>
-        <FormContainer>
+        <Row>
+        <Col md={{span:3, offset:5}}>
         <h1>Sign Up</h1>
         {message && <Message variant='danger'>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
@@ -111,7 +112,9 @@ const RegisterScreen = () => {
                 </Link>
             </Col>
         </Row>
-    </FormContainer> 
+        </Col>
+        </Row>
+        
     </div>
     )
 }
