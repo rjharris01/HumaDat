@@ -122,6 +122,7 @@ main {
   .container {
     margin-left: 0vw;
     width: 100vw;
+    margin-bottom: 2rem;
   }
 }
 
