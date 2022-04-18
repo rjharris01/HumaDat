@@ -13,15 +13,15 @@ Clone the repo
 
 Then:
 
-in client folder 
+in Application/client folder 
 run "npm install" to install all packages
 then "npm start"  to launch the react webserver
 
-in the server folder
+in the Application/server folder
 run "npm install" to install all packages
 then "node index.js"  to launch the node backend server
 
-launch the docker file "docker-compose.yml" to start the mongodb service
+launch the docker file "Application/mongodb/docker-compose.yml" to start the mongodb service
 using "docker-compose up -d" 
 
 adjust the .env to enable connection between node server and the mongo server
