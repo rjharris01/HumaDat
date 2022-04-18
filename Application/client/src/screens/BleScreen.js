@@ -3,13 +3,18 @@ import { blue, red } from '@mui/material/colors';
 import {IconButton} from '@mui/material';
 import BluetoothConnectedIcon from '@mui/icons-material/BluetoothConnected';
 import Chart from '../components/chart/chart';
-import { useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/sidebar/sidebar"
-import { Card, Container } from 'react-bootstrap';
+import { Button, Card, Container } from 'react-bootstrap';
+import { upload } from '../actions/uploadActions';
+import Message from '../components/Message'
+import Loader from '../components/Loader'
 
 
 const BleScreen = (props) => {
+  const dispatch = useDispatch()
+
   const [supportsBluetooth, setSupportsBluetooth] = useState(false);
   const [isDisconnected, setIsDisconnected] = useState(true);
 
@@ -17,6 +22,9 @@ const BleScreen = (props) => {
 
   const userLogin = useSelector((state) => state.userLogin)
   const {userInfo} = userLogin
+
+  const uploadState = useSelector(state => state.uploadReducer)
+  const {loading : uploadLoading, error : uploadError, uploadSuccess} = uploadState
 
   const tempService = "4294c394-91ab-11ec-b909-0242ac120002"
   const tempCharacteristicID = "4294a8a0-91ab-11ec-b909-0242ac120002"
@@ -39,7 +47,7 @@ const BleScreen = (props) => {
   const validService = "b07f7d8e-95ae-11ec-b909-0242ac120002"
   const hrValidCharacteristicID = "4294a0da-91ab-11ec-b909-0242ac120002"
 
-  const dataLimit = 30;
+  const dataLimit = 300;
 
   const [Humadata, setHumaData] =  useState({
     labels  : [],
@@ -197,7 +205,7 @@ const BleScreen = (props) => {
     if (pointer === 1)
     {
       
-      tempLabels.push(new Date().toLocaleString())
+      tempLabels.push(new Date().toISOString())
       const labels = [...tempLabels].slice(-dataLimit)
 
       tempDataset[pointer].data = tempData;
@@ -217,6 +225,28 @@ const BleScreen = (props) => {
     }
   }
 
+  const saveData = async () => {
+    const currentDevice = await navigator.bluetooth.getDevices();
+  
+
+    const dates = Humadata.labels
+
+
+    const tempData = Humadata.datasets.slice(0)
+
+
+    var data = []
+
+
+    for(let j = 0; j<dates.length-2;j++){
+        data.push([currentDevice[0].name,Humadata.labels[j],tempData[5].data[j],tempData[8].data[j],tempData[7].data[j],tempData[6].data[j],1,tempData[0].data[j],tempData[1].data[j],tempData[2].data[j],tempData[3].data[j],tempData[4].data[j],userInfo._id])
+      }
+    
+      dispatch(upload(data))
+
+
+
+  }
 
 
   /**
@@ -240,7 +270,7 @@ const BleScreen = (props) => {
       // Try to connect to the remote GATT Server running on the Bluetooth device
       const server = await device.gatt.connect();
 
-      // Get the battery service from the Bluetooth device
+      // Get the services from the Bluetooth device
       const services = await server.getPrimaryServices();
 
       const tempCharacteristic = await services.find(service => service.uuid === tempService).getCharacteristic(tempCharacteristicID);
@@ -304,12 +334,10 @@ const BleScreen = (props) => {
       const readingIR = await hrIRCharacteristic.readValue();
       const readingSp02 = await hrSpo2Characteristic.readValue();
 
-
-      console.log(readingRed);
      
       // Show the initial reading on the web page
       setHumaData({
-        labels  : [new Date().toLocaleString()],
+        labels  : [new Date().toISOString()],
         datasets: [{
           label: 'Temperature (°C)',
           data: [readingTemp.getInt16(0,true)],
@@ -394,6 +422,8 @@ const BleScreen = (props) => {
          text={'dark'}
          style={{ width: '80vw'}}
         >
+        {uploadError && <Message variant='danger'>{uploadError}</Message>}
+        {uploadSuccess && <Message variant='primary'>File Upload Success</Message>}
         <Card>
         <Card.Header>BLE Connection</Card.Header>
         <Card.Body>
@@ -429,7 +459,16 @@ const BleScreen = (props) => {
           }
           </div>
        
-        <Card.Footer className="text-muted"></Card.Footer>
+        <Card.Footer className="text-muted">
+        {supportsBluetooth && !isDisconnected && !uploadLoading ? 
+        
+        (<Button variant='primary m-3' onClick={saveData}>
+                          Save
+        </Button>):
+        (uploadLoading && <Loader/>) 
+          
+        }
+        </Card.Footer>
       </Card>
         
         
