@@ -27,12 +27,12 @@ using "docker-compose up -d"
 adjust the .env to enable connection between node server and the mongo server
 
 
-build the mbed prodject using MBED studio or CLI : 
+build the mbed prodject (Device) using MBED studio or CLI : 
 https://os.mbed.com/docs/mbed-os/v6.15/build-tools/compile.html
 to the nucleo f401re
 
 
-upload the Arduino file "humadat.ino" to the nodeMCU
+upload the Arduino file "BleBridge/humadat.ino" to the nodeMCU
 
 connect to the device using putty ("https://www.putty.org/") with baudrate =9600
 and set the current date.
