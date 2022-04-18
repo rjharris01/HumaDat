@@ -170,3 +170,61 @@ main {
   border: 2px dashed #4e9f3d;
   outline: none;
 }
+
+h3{
+  color: #4e9f3d;
+  background: #191a19ec;
+  border-radius: 25px;
+}
+
+h2{
+  font-size: 3rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #191a19;
+  width: 100vw;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3rem;
+  position: absolute;
+}
+
+
+
+h1{
+  font-size: 3rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #191a19;
+}
+
+
+h4{
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #191a19;
+}
+
+b{
+  color: #4e9f3d;
+  background: #191a19ec;
+  border-radius: 5px;
+  padding: 2px;
+}
+
+
+
+.carousel-control-next,
+.carousel-control-prev /*, .carousel-indicators */ {
+    filter: invert(100%);
+}
+
+.carousel .carousel-indicators {
+  filter: invert(100%);
+}
+
+.carousel .carousel-indicators .active {
+  background-color: #444;}
+
+ 

@@ -59,7 +59,7 @@ const ProfileScreen = () => {
         <Sidebar/>
         <Row>
         <Col md={{span:3, offset:5}}>
-        <h2>User Profile</h2>
+        <h1>User Profile</h1>
         {message && <Message variant='danger'>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
         {success && <Message variant='success'>Profile Updated</Message>}
