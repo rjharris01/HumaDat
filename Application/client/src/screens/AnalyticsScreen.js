@@ -126,8 +126,9 @@ const  AnalyticsScreen = () => {
 
       const [HRdata, setHRdata] =  useState({
         labels  : [],
-        datasets: [{data:[],
-        label: 'HR',borderColor: 'rgb(196, 25, 22)'}]
+        datasets: [
+        {data:[],label: 'HR',borderColor: 'rgb(196, 25, 22)'},
+        {data:[],label: 'Sp02',borderColor: 'rgb(22, 44, 184)'}]
       });
 
 
@@ -166,6 +167,8 @@ const  AnalyticsScreen = () => {
     
                 const hrData = humaData.map(a => a.hrValue);
 
+                const sp02Data = humaData.map(a => a.sp02Value);
+
                 tempDataset[0].data = xData
                 
                 tempDataset[1].data = yData
@@ -188,6 +191,7 @@ const  AnalyticsScreen = () => {
     
                 tempDataset = HRdata.datasets.slice(0)
                 tempDataset[0].data= hrData
+                tempDataset[1].data= sp02Data
     
                 setHRdata({
                     labels:   time,
